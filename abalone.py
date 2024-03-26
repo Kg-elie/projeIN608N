@@ -2,7 +2,7 @@ import pygame, sys
 
 pygame.init()
 
-WINDOW_SIZE = (600, 600)
+WINDOW_SIZE = (1280, 720)
 CELL_SIZE = 60
 GRID_SIZE = 9
 
