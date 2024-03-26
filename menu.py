@@ -1,4 +1,5 @@
 import pygame, sys
+import abalone
 
 class Button():
 	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
@@ -43,7 +44,7 @@ BG = pygame.image.load('bg.png')
 def get_font(size):
     return pygame.font.Font("font.ttf", size)
 
-def main_menu(): 
+def main_menu():
     pygame.display.set_caption('Main Menu')
 
     while True:
@@ -123,8 +124,13 @@ def inter_play():
 
         INTER_PLAY_BACK = Button(image=None, pos=(640, 460), text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
+        GAME = Button(image=None, pos=(640, 360), text_input="GAME", font=get_font(75), base_color="White", hovering_color="Green")
+
         INTER_PLAY_BACK.changeColor(INTER_PLAY_MOUSE_POS)
         INTER_PLAY_BACK.update(SCREEN)
+
+        GAME.changeColor(INTER_PLAY_MOUSE_POS)
+        GAME.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -133,6 +139,8 @@ def inter_play():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if INTER_PLAY_BACK.checkForInput(INTER_PLAY_MOUSE_POS):
                     main_menu()
+                if GAME.checkForInput(INTER_PLAY_MOUSE_POS):
+                    abalone.game()
             
 
         pygame.display.update()

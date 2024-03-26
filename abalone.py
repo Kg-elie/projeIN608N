@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 
 pygame.init()
 
@@ -34,7 +34,7 @@ def draw_matrix():
 
 
 
-def main():
+def game():
     running = True
     while running:
         for event in pygame.event.get():
@@ -54,5 +54,7 @@ def main():
  
     pygame.quit()
     sys.exit()
+    
 
-main()
+if __name__ == "__main__":
+    game()
