@@ -90,12 +90,7 @@ def play():
         PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-        INTER_PLAY = Button(image=None, pos=(640, 360), text_input="INTER_PLAY", font=get_font(75), base_color="White", hovering_color="Green")
-
         PLAY_BACK = Button(image=None, pos=(640, 460), text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-
-        INTER_PLAY.changeColor(PLAY_MOUSE_POS)
-        INTER_PLAY.update(SCREEN)
 
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(SCREEN)
@@ -107,43 +102,9 @@ def play():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu()
-                if INTER_PLAY.checkForInput(PLAY_MOUSE_POS):
-                    inter_play()
 
         pygame.display.update()
 
-def inter_play():
-     while True:
-        INTER_PLAY_MOUSE_POS = pygame.mouse.get_pos()
-
-        SCREEN.fill("black")
-
-        INTER_PLAY_TEXT = get_font(45).render("This is the screen where you'll choose the rules of the game.", True, "White")
-        INTER_PLAY_RECT = INTER_PLAY_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(INTER_PLAY_TEXT, INTER_PLAY_RECT)
-
-        INTER_PLAY_BACK = Button(image=None, pos=(640, 460), text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-
-        GAME = Button(image=None, pos=(640, 360), text_input="GAME", font=get_font(75), base_color="White", hovering_color="Green")
-
-        INTER_PLAY_BACK.changeColor(INTER_PLAY_MOUSE_POS)
-        INTER_PLAY_BACK.update(SCREEN)
-
-        GAME.changeColor(INTER_PLAY_MOUSE_POS)
-        GAME.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if INTER_PLAY_BACK.checkForInput(INTER_PLAY_MOUSE_POS):
-                    main_menu()
-                if GAME.checkForInput(INTER_PLAY_MOUSE_POS):
-                    abalone.game()
-            
-
-        pygame.display.update()
 
 def options():
     while True:

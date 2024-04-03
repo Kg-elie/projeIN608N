@@ -9,6 +9,7 @@ GRID_SIZE = 9
 GRID_WIDTH = GRID_SIZE * CELL_SIZE
 MARGIN_X = (WINDOW_SIZE[0] - GRID_WIDTH) // 2
 MARGIN_Y = (WINDOW_SIZE[1] - GRID_WIDTH) // 2
+RAYON = CELL_SIZE // 4
 
 
 WHITE = (255, 255, 255)
@@ -90,8 +91,10 @@ class Bille :
     Classe Bille qui permet de creer une bille
     """
     def __init__(self,couleur,x,y):
-        self.id =  pygame.draw.circle(screen, couleur, (x, y), CELL_SIZE // 4)
+        self.id =  pygame.draw.circle(screen, couleur, (x, y), RAYON)
         self.couleur = couleur
+        self.x = x
+        self.y = y
 
     def get_id(self):
         """
@@ -105,6 +108,18 @@ class Bille :
         """
         return self.couleur 
     
+    def get_x(self):
+        """
+        retourne la position x de la bille
+        """
+        return self.x
+    
+    def get_y(self):
+        """
+        retourne la position y de la bille
+        """
+        return self.y
+    
     def set_id(self,id):
         """
         permet de modifier l'id de la bille
@@ -116,6 +131,12 @@ class Bille :
         permet de modifier la couleur de la bille
         """
         self.couleur = couleur  
+
+    def get_couleur(self):
+        """
+        retourne la couleur de la bille
+        """
+        return self.couleur
 
     def __str__(self):
         """
@@ -130,14 +151,17 @@ class Bille :
         return " Bille couleur : " + str(self.couleur)
 
 
-screen = pygame.display.set_mode(WINDOW_SIZE)
-screen.blit(BG, (0,0))
-pygame.display.set_caption("Matrice de Ronds")
+def deplacer_bille():
+    """
+    Fonction qui permet de deplacer une bille sur le plateau de jeu
+    """
+    pass
 
-
-
-
-
+def distance(point1, point2):
+    """
+    Fonction qui permet de calculer la distance entre deux points, permet de reconnaitre si le curseur est dans la zoene d'une bille
+    """
+    return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
 
 
 
@@ -145,11 +169,33 @@ def game():
     """
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
     """
+
+    billes_select = []
+
     running = True
     while running:
+
+        GAME_POS = pygame.mouse.get_pos()
+
+        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for bille in positions.get_plateau():
+                    if distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON:
+                        if bille.get_id() in billes_select:
+                            billes_select.remove(bille.get_id())
+                            print(billes_select)
+                            break
+                        elif len(billes_select) < 3:
+                            billes_select.append(bille.get_id())
+                            print(billes_select)
+                            break
+                        else:
+                            print("Vous ne pouvez pas selectionner plus de 3 billes")
+                            break
             
 
 
@@ -168,4 +214,7 @@ def game():
 
 if __name__ == "__main__":
     pygame.init()
+    screen = pygame.display.set_mode(WINDOW_SIZE)
+    screen.blit(BG, (0,0))
+    pygame.display.set_caption("Matrice de Ronds")
     game()
