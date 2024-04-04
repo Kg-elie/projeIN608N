@@ -161,7 +161,7 @@ def deplacer_bille():
 def draw_regular_polygon(surface, couleur, nb_cote,
                          rayon, position, epaisseur=0):
     """
-    Fonction qui permet de dessiner un polygone 
+    Fonction qui permet de dessiner un polygone a n cotes (on peut garder juste le draw)
     """
     n, r = nb_cote, rayon
     x, y = position
@@ -174,7 +174,7 @@ def draw_regular_polygon(surface, couleur, nb_cote,
 
 def distance(point1, point2):
     """
-    Fonction qui permet de calculer la distance entre deux points, permet de reconnaitre si le curseur est dans la zoene d'une bille
+    Fonction qui permet de calculer la distance euclidienne entre deux points, permet de reconnaitre si le curseur est dans la zoene d'une bille
     """
     return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
 
@@ -215,9 +215,8 @@ def game(SCREEN):
                                 (bille.get_x(), bille.get_y(), RAYON + 5))
                             print(billes_select)
                             break
-                        else:
-                            print("Vous ne pouvez pas selectionner plus de 3 billes")
-                            break
+                        elif len(billes_select) == 3:
+                            if 
 
         for x, y, rayon in cercles:
             pygame.draw.circle(SCREEN, (0, 0, 0), (x, y), rayon, 5)
