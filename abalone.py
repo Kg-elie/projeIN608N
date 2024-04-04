@@ -1,9 +1,10 @@
 import pygame
 import sys
+from math import sin, cos, pi
 
 
 WINDOW_SIZE = (1280, 720)
-CELL_SIZE = 70
+CELL_SIZE = 75
 GRID_SIZE = 9
 
 GRID_WIDTH = GRID_SIZE * CELL_SIZE
@@ -15,7 +16,7 @@ RAYON = CELL_SIZE // 4
 WHITE = (255, 255, 255)
 VIDE = (101, 67, 32)
 BROWN = (139, 69, 19)
-BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 BG = pygame.image.load('bg.png')
 
@@ -62,11 +63,11 @@ class Plateau:
                         x = MARGIN_X + col * CELL_SIZE + CELL_SIZE // 2
                     y = MARGIN_Y + row * CELL_SIZE + CELL_SIZE // 2
                     if position[cpt] == -1:
-                        self.plateau.append(Bille(SCREEN, WHITE, x, y))
+                        self.plateau.append(Bille(SCREEN, RED, x, y))
                     elif position[cpt] == 0:
                         self.plateau.append(Bille(SCREEN, VIDE, x, y))
                     else:
-                        self.plateau.append(Bille(SCREEN, BLACK, x, y))
+                        self.plateau.append(Bille(SCREEN, BLUE, x, y))
                     cpt += 1
 
     def get_plateau(self):
@@ -155,6 +156,17 @@ def deplacer_bille():
     pass
 
 
+def draw_regular_polygon(surface, color, vertex_count,
+                         radius, position, width=0):
+    n, r = vertex_count, radius
+    x, y = position
+    pygame.draw.polygon(surface, color, [
+        (x + r * cos(2 * pi * i / n),
+         y + r * sin(2 * pi * i / n))
+        for i in range(n)
+    ], width)
+
+
 def distance(point1, point2):
     """
     Fonction qui permet de calculer la distance entre deux points, permet de reconnaitre si le curseur est dans la zoene d'une bille
@@ -173,9 +185,8 @@ def game(SCREEN):
     while running:
 
         SCREEN.fill(WHITE)
-        pygame.draw.circle(
-            SCREEN, BROWN, (WINDOW_SIZE[0]//2, WINDOW_SIZE[1]//2), WINDOW_SIZE[1]//2)
-        "creer un cercle marron au centre de l'ecran"
+        draw_regular_polygon(SCREEN, BROWN, 6, WINDOW_SIZE[1]//2 + 50,
+                             (WINDOW_SIZE[0]//2, WINDOW_SIZE[1]//2), 0)
 
         positions = Plateau(SCREEN)
 
