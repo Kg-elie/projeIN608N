@@ -20,6 +20,8 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 BG = pygame.image.load('bg.png')
 
+cercles = []
+
 
 class Plateau:
     """ 
@@ -156,15 +158,18 @@ def deplacer_bille():
     pass
 
 
-def draw_regular_polygon(surface, color, vertex_count,
-                         radius, position, width=0):
-    n, r = vertex_count, radius
+def draw_regular_polygon(surface, couleur, nb_cote,
+                         rayon, position, epaisseur=0):
+    """
+    Fonction qui permet de dessiner un polygone 
+    """
+    n, r = nb_cote, rayon
     x, y = position
-    pygame.draw.polygon(surface, color, [
+    pygame.draw.polygon(surface, couleur, [
         (x + r * cos(2 * pi * i / n),
          y + r * sin(2 * pi * i / n))
         for i in range(n)
-    ], width)
+    ], epaisseur)
 
 
 def distance(point1, point2):
@@ -200,15 +205,22 @@ def game(SCREEN):
                     if distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON:
                         if bille.get_id() in billes_select:
                             billes_select.remove(bille.get_id())
+                            cercles.remove(
+                                (bille.get_x(), bille.get_y(), RAYON + 5))
                             print(billes_select)
                             break
                         elif len(billes_select) < 3:
                             billes_select.append(bille.get_id())
+                            cercles.append(
+                                (bille.get_x(), bille.get_y(), RAYON + 5))
                             print(billes_select)
                             break
                         else:
                             print("Vous ne pouvez pas selectionner plus de 3 billes")
                             break
+
+        for x, y, rayon in cercles:
+            pygame.draw.circle(SCREEN, (0, 0, 0), (x, y), rayon, 5)
 
         pygame.display.flip()
 
