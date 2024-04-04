@@ -65,11 +65,11 @@ class Plateau:
                         x = MARGIN_X + col * CELL_SIZE + CELL_SIZE // 2
                     y = MARGIN_Y + row * CELL_SIZE + CELL_SIZE // 2
                     if position[cpt] == -1:
-                        self.plateau.append(Bille(SCREEN, RED, x, y))
+                        self.plateau.append(Bille(SCREEN, RED, x, y, cpt))
                     elif position[cpt] == 0:
-                        self.plateau.append(Bille(SCREEN, VIDE, x, y))
+                        self.plateau.append(Bille(SCREEN, VIDE, x, y, cpt))
                     else:
-                        self.plateau.append(Bille(SCREEN, BLUE, x, y))
+                        self.plateau.append(Bille(SCREEN, BLUE, x, y, cpt))
                     cpt += 1
 
     def get_plateau(self):
@@ -96,11 +96,12 @@ class Bille:
     Classe Bille qui permet de creer une bille
     """
 
-    def __init__(self, SCREEN, couleur, x, y):
-        self.id = pygame.draw.circle(SCREEN, couleur, (x, y), RAYON)
+    def __init__(self, SCREEN, couleur, x, y, id):
+        self.circle = pygame.draw.circle(SCREEN, couleur, (x, y), RAYON)
         self.couleur = couleur
         self.x = x
         self.y = y
+        self.id = id
 
     def get_id(self):
         """
@@ -151,9 +152,10 @@ class Bille:
         return " Bille couleur : " + str(self.couleur)
 
 
-def deplacer_bille():
+def deplacer_bille(billes_select):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu
+    Utilisation de récursivité ? 
     """
     pass
 
@@ -216,7 +218,7 @@ def game(SCREEN):
                             print(billes_select)
                             break
                         elif len(billes_select) == 3:
-                            if 
+                            deplacer_bille(billes_select)
 
         for x, y, rayon in cercles:
             pygame.draw.circle(SCREEN, (0, 0, 0), (x, y), rayon, 5)
