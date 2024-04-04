@@ -208,13 +208,13 @@ def game(SCREEN):
                         if bille.get_id() in billes_select:
                             billes_select.remove(bille.get_id())
                             cercles.remove(
-                                (bille.get_x(), bille.get_y(), RAYON + 5))
+                                (bille.get_x(), bille.get_y(), RAYON + 2))
                             print(billes_select)
                             break
                         elif len(billes_select) < 3:
                             billes_select.append(bille.get_id())
                             cercles.append(
-                                (bille.get_x(), bille.get_y(), RAYON + 5))
+                                (bille.get_x(), bille.get_y(), RAYON + 2))
                             print(billes_select)
                             break
                         elif len(billes_select) == 3:
