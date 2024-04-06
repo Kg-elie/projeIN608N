@@ -240,6 +240,12 @@ def game(SCREEN):
                             elif len(billes_select) == 0:
                                 break
 
+                        elif place in billes_select:
+                            billes_select.remove(place)
+                            cercles.remove(
+                                (bille.get_x(), bille.get_y(), RAYON + 2))
+                            break
+
                         elif len(billes_select) == 0:
                             billes_select.append(place)
                             cercles.append(
@@ -247,11 +253,7 @@ def game(SCREEN):
                             print(billes_select)
                             break
 
-                        elif bille.get_id() in billes_select:
-                            billes_select.remove(place)
-                            cercles.remove(
-                                (bille.get_x(), bille.get_y(), RAYON + 2))
-                            break
+                        
 
 
                         elif len(billes_select) >0 :
@@ -264,6 +266,7 @@ def game(SCREEN):
                             elif bille.get_couleur !=  positions.get_bille(billes_select[-1]).get_couleur() :
                                 deplacer_bille(billes_select, place)
                                 billes_select = []
+                print("billes:", billes_select)
                             
 
         for x, y, rayon in cercles:
