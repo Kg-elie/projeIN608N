@@ -32,8 +32,7 @@ class Plateau:
         """ 
         Constructeur de la classe Plateau
         """
-        self.plateau = []
-        self.rang = [5, 6, 7, 8, 9, 8, 7, 6, 5]
+        self.plateau = dict()
         self.init_plateau(SCREEN)
 
     def init_plateau(self, SCREEN):
@@ -57,6 +56,7 @@ class Plateau:
         cpt = 0
         "c'est les main de la methode qui permet de creer les billes et de les positionner sur le plateau on ne cree une bille que si la valeur de la matrice est 1 et on choisi la couleur de la bille en fonction de la valeur de la liste position"
         for row in range(GRID_SIZE):
+            difference = 0 
             for col in range(GRID_SIZE):
                 if schema[row][col] == 1:
                     if row % 2 == 1:
@@ -64,13 +64,21 @@ class Plateau:
                     else:
                         x = MARGIN_X + col * CELL_SIZE + CELL_SIZE // 2
                     y = MARGIN_Y + row * CELL_SIZE + CELL_SIZE // 2
-                    if position[cpt] == -1:
-                        self.plateau.append(Bille(SCREEN, RED, x, y, cpt))
-                    elif position[cpt] == 0:
-                        self.plateau.append(Bille(SCREEN, VIDE, x, y, cpt))
+                    if row >4:
+                        decalage = row - 4 ; "permet de gerer les colonnes en diagonale"
                     else:
-                        self.plateau.append(Bille(SCREEN, BLUE, x, y, cpt))
+                        decalage = 0
+                    if position[cpt] == -1:
+                        self.plateau[chr(row+65) + str(col-difference + decalage)] = Bille(SCREEN, RED, x, y, cpt)
+                    elif position[cpt] == 0:
+                        self.plateau[chr(row+65) + str(col-difference + decalage)] = Bille(SCREEN, VIDE, x, y, cpt)
+                    else:
+                        self.plateau[chr(row+65) + str(col-difference + decalage )] = Bille(SCREEN, BLUE, x, y, cpt)
                     cpt += 1
+                else:
+                    difference += 1
+                
+        
 
     def get_plateau(self):
         """
@@ -78,17 +86,19 @@ class Plateau:
         """
         return self.plateau
 
-    def get_rang(self):
+    def get_bille(self,cle):
         """
-        retourne la liste des rangées
+        retourne la bille a la position cle
         """
-        return self.rang
+        return self.plateau[cle]
 
     def __str__(self):
         """
         permet d'afficher le plateau de jeu
         """
-        return "Plateau : " + str(self.plateau) + " Rang : " + str(self.rang)
+        return "Plateau : " + str(self.plateau) 
+
+
 
 
 class Bille:
@@ -152,12 +162,28 @@ class Bille:
         return " Bille couleur : " + str(self.couleur)
 
 
-def deplacer_bille(billes_select):
+def deplacer_bille(billes_select, bille):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu
     Utilisation de récursivité ? 
     """
+
+    for bille_select in billes_select:
+        x,y = positions.get_bille(bille_select).get_x(), positions.get_bille(bille_select).get_y()
+        cercles.remove((x, y, RAYON + 2))
+        
+
+    print(f"deplacement{billes_select} vers {bille} " )
+
+
+
+
+def rencontre_bille(billes_select, bille):
+    """
+    Fonction qui deplace une bille en confrontant celles de l'adversaire
+    """
     pass
+        
 
 
 def draw_regular_polygon(surface, couleur, nb_cote,
@@ -185,7 +211,7 @@ def game(SCREEN):
     """
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
     """
-
+    global positions
     billes_select = []
 
     running = True
@@ -202,23 +228,43 @@ def game(SCREEN):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                print(positions.plateau)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for bille in positions.get_plateau():
-                    if distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON:
-                        if bille.get_id() in billes_select:
-                            billes_select.remove(bille.get_id())
-                            cercles.remove(
-                                (bille.get_x(), bille.get_y(), RAYON + 2))
-                            print(billes_select)
-                            break
-                        elif len(billes_select) < 3:
-                            billes_select.append(bille.get_id())
+                for place, bille in positions.get_plateau().items():
+                    if distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) < 3:
+                        print(place)
+                        if bille.get_couleur() == VIDE :
+                            if len(billes_select) >0:
+                                deplacer_bille(billes_select, place)
+                                billes_select = []
+                            elif len(billes_select) == 0:
+                                break
+
+                        elif len(billes_select) == 0:
+                            billes_select.append(place)
                             cercles.append(
                                 (bille.get_x(), bille.get_y(), RAYON + 2))
                             print(billes_select)
                             break
-                        elif len(billes_select) == 3:
-                            deplacer_bille(billes_select)
+
+                        elif bille.get_id() in billes_select:
+                            billes_select.remove(place)
+                            cercles.remove(
+                                (bille.get_x(), bille.get_y(), RAYON + 2))
+                            break
+
+
+                        elif len(billes_select) >0 :
+                            if bille.get_couleur() == positions.get_bille(billes_select[-1]).get_couleur() :
+                                billes_select.append(place)
+                                cercles.append(
+                                    (bille.get_x(), bille.get_y(), RAYON + 2))
+                                
+                                
+                            elif bille.get_couleur !=  positions.get_bille(billes_select[-1]).get_couleur() :
+                                deplacer_bille(billes_select, place)
+                                billes_select = []
+                            
 
         for x, y, rayon in cercles:
             pygame.draw.circle(SCREEN, (0, 0, 0), (x, y), rayon, 5)
