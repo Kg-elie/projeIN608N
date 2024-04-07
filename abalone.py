@@ -231,9 +231,9 @@ def game(SCREEN):
                 print(positions.plateau)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for place, bille in positions.get_plateau().items():
-                    if distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) < 3:
-                        print(place)
+                    if distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:
                         if bille.get_couleur() == VIDE :
+                            print("0")
                             if len(billes_select) >0:
                                 deplacer_bille(billes_select, place)
                                 billes_select = []
@@ -241,29 +241,31 @@ def game(SCREEN):
                                 break
 
                         elif place in billes_select:
+                            print("1")
                             billes_select.remove(place)
                             cercles.remove(
                                 (bille.get_x(), bille.get_y(), RAYON + 2))
                             break
 
                         elif len(billes_select) == 0:
+                            print("2")
                             billes_select.append(place)
                             cercles.append(
                                 (bille.get_x(), bille.get_y(), RAYON + 2))
                             print(billes_select)
                             break
 
-                        
-
-
-                        elif len(billes_select) >0 :
+                        elif len(billes_select) <3 :
+                            print("3")
                             if bille.get_couleur() == positions.get_bille(billes_select[-1]).get_couleur() :
+                                print("4")
                                 billes_select.append(place)
                                 cercles.append(
                                     (bille.get_x(), bille.get_y(), RAYON + 2))
                                 
                                 
                             elif bille.get_couleur !=  positions.get_bille(billes_select[-1]).get_couleur() :
+                                print("5")
                                 deplacer_bille(billes_select, place)
                                 billes_select = []
                 print("billes:", billes_select)
