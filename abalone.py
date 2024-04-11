@@ -13,8 +13,6 @@ WHITE = (255, 255, 255)
 VIDE = (101, 67, 32)
 BROWN = (139, 69, 19)
 
-player = 1
-
 cercles = []
 
 
@@ -22,8 +20,8 @@ def game(SCREEN):
     """
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
     """
-    global plateau
     billes_select = []
+    player = 1
 
     running = True
     while running:
@@ -34,6 +32,17 @@ def game(SCREEN):
 
         plateau = toolbox.Plateau(
             SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON)
+
+        if player == 1:
+            player_turn = toolbox.get_font(45).render(
+                "Player 1's turn", True, "BLACK")
+            player_rect = player_turn.get_rect(center=(200, 100))
+            SCREEN.blit(player_turn, player_rect)
+        else:
+            player_turn = toolbox.get_font(45).render(
+                "Player 2's turn", True, "BLACK")
+            player_rect = player_turn.get_rect(center=(200, 100))
+            SCREEN.blit(player_turn, player_rect)
 
         GAME_POS = pygame.mouse.get_pos()
 
@@ -50,6 +59,10 @@ def game(SCREEN):
                                 toolbox.deplacer_bille(
                                     plateau, billes_select, place, cercles)
                                 billes_select = []
+                                if player == 1:
+                                    player = 2
+                                else:
+                                    player = 1
                             elif len(billes_select) == 0:
                                 break
 
@@ -80,6 +93,10 @@ def game(SCREEN):
                                 print("5")
                                 toolbox.deplacer_bille(billes_select, place)
                                 billes_select = []
+                                if player == 1:
+                                    player = 2
+                                else:
+                                    player = 1
                 print("billes:", billes_select)
 
         for x, y, rayon in cercles:
