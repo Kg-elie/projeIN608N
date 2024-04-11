@@ -40,15 +40,15 @@ class Plateau:
     Classe Plateau qui permet de creer un plateau de jeu, c'est la class main de la gestion du jeu
     """
 
-    def __init__(self, SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_SIZE, RAYON):
+    def __init__(self, SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON):
         """ 
         Constructeur de la classe Plateau
         """
         self.plateau = dict()
         self.WINDOW_SIZE = WINDOW_SIZE
         self.CELL_SIZE = CELL_SIZE
-        self.GRID_SIZE = GRID_SIZE
-        self.GRID_WIDTH = CELL_SIZE * GRID_SIZE
+        self.GRID_LENGTH = GRID_LENGTH
+        self.GRID_WIDTH = CELL_SIZE * GRID_LENGTH
         self.MARGIN_X = (WINDOW_SIZE[0] - self.GRID_WIDTH) // 2
         self.MARGIN_Y = (WINDOW_SIZE[1] - self.GRID_WIDTH) // 2
         self.RAYON = RAYON
@@ -74,9 +74,9 @@ class Plateau:
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         cpt = 0
         "c'est les main de la methode qui permet de creer les billes et de les positionner sur le plateau on ne cree une bille que si la valeur de la matrice est 1 et on choisi la couleur de la bille en fonction de la valeur de la liste position"
-        for row in range(self.GRID_SIZE):
+        for row in range(self.GRID_LENGTH):
             difference = 0
-            for col in range(self.GRID_SIZE):
+            for col in range(self.GRID_LENGTH):
                 if schema[row][col] == 1:
                     if row % 2 == 1:
                         x = self.MARGIN_X + col * self.CELL_SIZE + self.CELL_SIZE // 2 + 30

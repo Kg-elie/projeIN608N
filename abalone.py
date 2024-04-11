@@ -3,10 +3,22 @@ import sys
 import toolbox
 
 
+WINDOW_SIZE = (1280, 720)
+CELL_SIZE = 75
+GRID_LENGTH = 9
+
+RAYON = CELL_SIZE // 4
+
+WHITE = (255, 255, 255)
+VIDE = (101, 67, 32)
+BROWN = (139, 69, 19)
+
+player = 1
+
 cercles = []
 
 
-def game(SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_SIZE, RAYON, WHITE, VIDE, BROWN):
+def game(SCREEN):
     """
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
     """
@@ -21,7 +33,7 @@ def game(SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_SIZE, RAYON, WHITE, VIDE, BROWN):
                                      (WINDOW_SIZE[0]//2, WINDOW_SIZE[1]//2), 0)
 
         plateau = toolbox.Plateau(
-            SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_SIZE, RAYON)
+            SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON)
 
         GAME_POS = pygame.mouse.get_pos()
 
@@ -84,7 +96,7 @@ if __name__ == "__main__":
     BG = pygame.image.load('bg.png')
     WINDOW_SIZE = (1280, 720)
     CELL_SIZE = 75
-    GRID_SIZE = 9
+    GRID_LENGTH = 9
 
     RAYON = CELL_SIZE // 4
 
@@ -95,4 +107,4 @@ if __name__ == "__main__":
     SCREEN = pygame.display.set_mode(WINDOW_SIZE)
     SCREEN.blit(BG, (0, 0))
     pygame.display.set_caption("Matrice de Ronds")
-    game(SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_SIZE, RAYON, WHITE, VIDE, BROWN)
+    game(SCREEN)
