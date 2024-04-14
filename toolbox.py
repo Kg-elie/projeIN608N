@@ -52,6 +52,7 @@ class Plateau:
         self.MARGIN_X = (WINDOW_SIZE[0] - self.GRID_WIDTH) // 2
         self.MARGIN_Y = (WINDOW_SIZE[1] - self.GRID_WIDTH) // 2
         self.RAYON = RAYON
+        self.SCREEN = SCREEN
         self.init_plateau(SCREEN)
 
     def init_plateau(self, SCREEN):
@@ -172,7 +173,7 @@ class Bille:
         """
         permet d'afficher la bille
         """
-        return "Bille id : " + str(self.id) + " Bille couleur : " + self.couleur
+        return "Bille id : " + str(self.id) + " Bille couleur : " + str(self.couleur)
 
     def __repr__(self):
         """
@@ -180,19 +181,72 @@ class Bille:
         """
         return " Bille couleur : " + str(self.couleur)
 
+def trouver_direction(mouvement):
+    if mouvement == "++":
+        return "SE"
+    
+    elif mouvement == "-+":
+        return "SW"
+    elif mouvement == "--":
+        return "NW"
+    
+    elif mouvement == "+-": 
+        return "NE"
+    elif mouvement == "+/": 
+        return "E"
+    elif mouvement == "-/":
+        return "W"
 
-def deplacer_bille(plateau, billes_select, bille, cercles):
+def trouver_position(pos_bille,direction):
+    """
+    donne la nouvelle position de la bille en fonction de la direction
+    """
+    lettre,num = ord(pos_bille[0]),int(pos_bille[1])
+    boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}
+    new_pos = (chr(lettre+boussole[direction][0]),str(num+boussole[direction][1]))
+    print(f"position {pos_bille} vers {new_pos} ")
+
+
+
+def deplacement(plateau, billes_select, bille, cercles):
+    """
+    Fonction qui permet de receuillirtoutes les inormations pour le deplacement 
+    d'une bille sur le plateau de jeu Utilisation de récursivité ? 
+    """
+    new_x, new_y = plateau.get_bille(bille).get_x(), plateau.get_bille(bille).get_y()
+    x,y = plateau.get_bille(billes_select[-1]).get_x(),plateau.get_bille(billes_select[-1]).get_y()
+    mouvement = ""
+    if new_x == x:
+        mouvement +="/"
+    elif new_x >= x:
+        mouvement += "+"
+    else:
+        mouvement += "-"
+    if new_y == y:
+        mouvement +="/"
+    elif new_y >= y:
+        mouvement += "+"
+    else:
+        mouvement += "-"
+    print(mouvement)
+    for bille_select in billes_select:
+        actual= plateau.get_bille(bille_select)
+        x, y = actual.get_x(), actual.get_y()
+        cercles.remove((x, y, plateau.RAYON + 2))
+        new_pos = trouver_position(bille_select,trouver_direction(mouvement))
+        deplacer_bille(plateau, bille_select, x, y, actual.get_id(), actual.get_couleur(),bille, new_x,
+        new_y,plateau.get_bille(bille).get_id())
+        actual= plateau.get_bille(bille_select)
+        print(actual)
+
+def deplacer_bille(plateau, bille,x,y,cpt, color, target,new_x,new_y,t_cpt):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu
-    Utilisation de récursivité ? 
     """
-
-    for bille_select in billes_select:
-        x, y = plateau.get_bille(bille_select).get_x(
-        ), plateau.get_bille(bille_select).get_y()
-        cercles.remove((x, y, plateau.RAYON + 2))
-
-    print(f"deplacement{billes_select} vers {bille} ")
+    plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), new_x, new_y, cpt, plateau.RAYON)
+    plateau.plateau[target] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
+    
+    
 
 
 def rencontre_bille(billes_select, bille):

@@ -56,7 +56,7 @@ def game(SCREEN):
                         if bille.get_couleur() == VIDE:
                             print("0")
                             if len(billes_select) > 0:
-                                toolbox.deplacer_bille(
+                                toolbox.deplacement(
                                     plateau, billes_select, place, cercles)
                                 billes_select = []
                                 if player == 1:
@@ -91,13 +91,13 @@ def game(SCREEN):
 
                             elif bille.get_couleur != plateau.get_bille(billes_select[-1]).get_couleur():
                                 print("5")
-                                toolbox.deplacer_bille(billes_select, place)
+                                toolbox.deplacement(billes_select, place)
                                 billes_select = []
                                 if player == 1:
                                     player = 2
                                 else:
                                     player = 1
-                print("billes:", billes_select)
+            
 
         for x, y, rayon in cercles:
             pygame.draw.circle(SCREEN, (0, 0, 0), (x, y), rayon, 5)
