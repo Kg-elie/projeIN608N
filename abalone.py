@@ -54,6 +54,7 @@ def game(SCREEN):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for place, bille in plateau.get_plateau().items():
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:
+                        """ gestion du deplacement des billes selectionnées """
                         if bille.get_couleur() == VIDE:
                             print("deplacemnt bille vide")
                             if len(billes_select) > 0:
@@ -67,8 +68,9 @@ def game(SCREEN):
                                     player = 1
                             elif len(billes_select) == 0:
                                 break
-
+                         
                         elif place in billes_select:
+                            """ bille selectionnée supprimer """
                             print("suppression bille")
                             billes_select.remove(place)
                             cercles.remove(
@@ -76,6 +78,7 @@ def game(SCREEN):
                             break
 
                         elif len(billes_select) == 0:
+                            """ premiere bille a ajouter """
                             print("ajout de la premiere bille")
                             billes_select.append(place)
                             cercles.append(
@@ -84,12 +87,14 @@ def game(SCREEN):
                             break
 
                         elif  len(billes_select) < 3:
-                            
+                            """ plusieurs billes selectionnée  """
                             if bille.get_couleur() == plateau.get_bille(billes_select[-1]).get_couleur():
+                                """ verification de la couleur"""
                                 if len(billes_select) == 1:
                                     alignement = toolbox.alignement(
                                         billes_select[-1], place)
                                 elif toolbox.alignement(billes_select[-1], place) != alignement:
+                                    """ verification de l'alignement"""
                                     print(toolbox.alignement(billes_select[-1], place))
                                     print(alignement)
                                     print("alignement pas ok")
@@ -101,6 +106,7 @@ def game(SCREEN):
                                     (bille.get_x(), bille.get_y(), RAYON + 2))
 
                             elif bille.get_couleur != plateau.get_bille(billes_select[-1]).get_couleur():
+                                """ verification de la couleur pour gere le deplacement des billes"""
                                 print("choix bille adverse")
                                 toolbox.deplacement(billes_select, place)
                                 billes_select = []
