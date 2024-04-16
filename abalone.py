@@ -24,14 +24,15 @@ def game(SCREEN):
     player = 1
 
     running = True
-    while running:
-
-        SCREEN.fill(WHITE)
-        toolbox.draw_regular_polygon(SCREEN, BROWN, 6, WINDOW_SIZE[1]//2 + 50,
+    SCREEN.fill(WHITE)
+    toolbox.draw_regular_polygon(SCREEN, BROWN, 6, WINDOW_SIZE[1]//2 + 50,
                                      (WINDOW_SIZE[0]//2, WINDOW_SIZE[1]//2), 0)
 
-        plateau = toolbox.Plateau(
+    plateau = toolbox.Plateau(
             SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON)
+    while running:
+
+        
 
         if player == 1:
             player_turn = toolbox.get_font(45).render(
@@ -49,12 +50,12 @@ def game(SCREEN):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                print(plateau.plateau)
+                
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for place, bille in plateau.get_plateau().items():
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:
                         if bille.get_couleur() == VIDE:
-                            print("0")
+                            print("deplacemnt bille vide")
                             if len(billes_select) > 0:
                                 toolbox.deplacement(
                                     plateau, billes_select, place, cercles)
@@ -67,30 +68,29 @@ def game(SCREEN):
                                 break
 
                         elif place in billes_select:
-                            print("1")
+                            print("suppression bille")
                             billes_select.remove(place)
                             cercles.remove(
                                 (bille.get_x(), bille.get_y(), RAYON + 2))
                             break
 
                         elif len(billes_select) == 0:
-                            print("2")
+                            print("ajout de la premiere bille")
                             billes_select.append(place)
                             cercles.append(
                                 (bille.get_x(), bille.get_y(), RAYON + 2))
                             print(billes_select)
                             break
 
-                        elif len(billes_select) < 3:
-                            print("3")
+                        elif  len(billes_select) < 3:
                             if bille.get_couleur() == plateau.get_bille(billes_select[-1]).get_couleur():
-                                print("4")
+                                print("ajout bille")
                                 billes_select.append(place)
                                 cercles.append(
                                     (bille.get_x(), bille.get_y(), RAYON + 2))
 
                             elif bille.get_couleur != plateau.get_bille(billes_select[-1]).get_couleur():
-                                print("5")
+                                print("choix bille adverse")
                                 toolbox.deplacement(billes_select, place)
                                 billes_select = []
                                 if player == 1:
@@ -104,7 +104,6 @@ def game(SCREEN):
 
         pygame.display.flip()
 
-    print(plateau)
     pygame.quit()
     sys.exit()
 

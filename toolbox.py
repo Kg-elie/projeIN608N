@@ -184,12 +184,10 @@ class Bille:
 def trouver_direction(mouvement):
     if mouvement == "++":
         return "SE"
-    
     elif mouvement == "-+":
         return "SW"
     elif mouvement == "--":
         return "NW"
-    
     elif mouvement == "+-": 
         return "NE"
     elif mouvement == "+/": 
@@ -204,7 +202,8 @@ def trouver_position(pos_bille,direction):
     lettre,num = ord(pos_bille[0]),int(pos_bille[1])
     boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}
     new_pos = (chr(lettre+boussole[direction][0]),str(num+boussole[direction][1]))
-    print(f"position {pos_bille} vers {new_pos} ")
+    print(f"position {pos_bille} vers {new_pos[0]+new_pos[1]} avec un mouvement : {direction}")
+    return new_pos[0]+new_pos[1]
 
 
 
@@ -213,6 +212,7 @@ def deplacement(plateau, billes_select, bille, cercles):
     Fonction qui permet de receuillirtoutes les inormations pour le deplacement 
     d'une bille sur le plateau de jeu Utilisation de récursivité ? 
     """
+    print(f" liste des billes selectionner{billes_select}")
     new_x, new_y = plateau.get_bille(bille).get_x(), plateau.get_bille(bille).get_y()
     x,y = plateau.get_bille(billes_select[-1]).get_x(),plateau.get_bille(billes_select[-1]).get_y()
     mouvement = ""
@@ -228,23 +228,22 @@ def deplacement(plateau, billes_select, bille, cercles):
         mouvement += "+"
     else:
         mouvement += "-"
-    print(mouvement)
     for bille_select in billes_select:
         actual= plateau.get_bille(bille_select)
         x, y = actual.get_x(), actual.get_y()
         cercles.remove((x, y, plateau.RAYON + 2))
         new_pos = trouver_position(bille_select,trouver_direction(mouvement))
-        deplacer_bille(plateau, bille_select, x, y, actual.get_id(), actual.get_couleur(),bille, new_x,
-        new_y,plateau.get_bille(bille).get_id())
+        new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y()
+        deplacer_bille(plateau, bille_select, x, y, actual.get_id(), actual.get_couleur(),new_pos, new_x,
+        new_y,plateau.get_bille(new_pos).get_id())
         actual= plateau.get_bille(bille_select)
-        print(actual)
 
 def deplacer_bille(plateau, bille,x,y,cpt, color, target,new_x,new_y,t_cpt):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu
     """
-    plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), new_x, new_y, cpt, plateau.RAYON)
-    plateau.plateau[target] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
+    plateau.plateau[target] = Bille(plateau.SCREEN, color, new_x, new_y, cpt, plateau.RAYON)
+    plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
     
     
 
