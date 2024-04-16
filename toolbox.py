@@ -283,7 +283,7 @@ def alignement(billes_select, bille):
     Fonction qui permet de verifier si les billes selectionnees sont alignees
     """
     print(f"billes_select : {billes_select} bille : {bille}")
-    if billes_select[0] == bille[0] and int(billes_select[1]) - int(bille[1]) in [-1,-2,2,1]:
+    if billes_select[0] == bille[0] and int(billes_select[1]) - int(bille[1]) in [-1,1]:
         return "horizontale"
     elif billes_select[1] == bille[1] and ord(billes_select[0]) - ord(bille[0]) in [-1,1]:
         return "DiagonaleMemeNumero"
