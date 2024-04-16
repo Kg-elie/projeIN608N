@@ -22,7 +22,7 @@ def game(SCREEN):
     """
     billes_select = []
     player = 1
-
+    alignement = ""
     running = True
     SCREEN.fill(WHITE)
     toolbox.draw_regular_polygon(SCREEN, BROWN, 6, WINDOW_SIZE[1]//2 + 50,
@@ -60,6 +60,7 @@ def game(SCREEN):
                                 toolbox.deplacement(
                                     plateau, billes_select, place, cercles)
                                 billes_select = []
+                                alignement = ""
                                 if player == 1:
                                     player = 2
                                 else:
@@ -83,7 +84,17 @@ def game(SCREEN):
                             break
 
                         elif  len(billes_select) < 3:
+                            
                             if bille.get_couleur() == plateau.get_bille(billes_select[-1]).get_couleur():
+                                if len(billes_select) == 1:
+                                    alignement = toolbox.alignement(
+                                        billes_select[-1], place)
+                                elif toolbox.alignement(billes_select[-1], place) != alignement:
+                                    print(toolbox.alignement(billes_select[-1], place))
+                                    print(alignement)
+                                    print("alignement pas ok")
+                                    continue
+                                print(alignement)
                                 print("ajout bille")
                                 billes_select.append(place)
                                 cercles.append(
@@ -97,6 +108,8 @@ def game(SCREEN):
                                     player = 2
                                 else:
                                     player = 1
+                print(billes_select)    
+                                    
             
 
         for x, y, rayon in cercles:

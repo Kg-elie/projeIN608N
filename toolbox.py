@@ -205,7 +205,18 @@ def trouver_position(pos_bille,direction):
     print(f"position {pos_bille} vers {new_pos[0]+new_pos[1]} avec un mouvement : {direction}")
     return new_pos[0]+new_pos[1]
 
-
+def verification_mouvement(plateau,pos_bille, direction,billes_select):
+    """
+    Fonction qui permet de verifier si le mouvement est possible
+    """
+    lettre,num = ord(pos_bille[0]),int(pos_bille[1])
+    boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}
+    if plateau.get_bille(chr(lettre+boussole[direction][0])+
+        str(num+boussole[direction][1])).get_couleur() == (101, 67, 32) or chr(
+        lettre+boussole[direction][0])+str(num+boussole[direction][1]) in billes_select:
+        return True
+    print(f"mouvement impossible de {pos_bille} vers {chr(lettre+boussole[direction][0])+str(num+boussole[direction][1])}")
+    return False
 
 def deplacement(plateau, billes_select, bille, cercles):
     """
@@ -228,23 +239,60 @@ def deplacement(plateau, billes_select, bille, cercles):
         mouvement += "+"
     else:
         mouvement += "-"
-    for bille_select in billes_select:
-        actual= plateau.get_bille(bille_select)
-        x, y = actual.get_x(), actual.get_y()
-        cercles.remove((x, y, plateau.RAYON + 2))
-        new_pos = trouver_position(bille_select,trouver_direction(mouvement))
-        new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y()
-        deplacer_bille(plateau, bille_select, x, y, actual.get_id(), actual.get_couleur(),new_pos, new_x,
-        new_y,plateau.get_bille(new_pos).get_id())
-        actual= plateau.get_bille(bille_select)
+    verif = True
+    for bille in billes_select:
+        verif*=verification_mouvement(plateau,bille,trouver_direction(mouvement),billes_select)
+    if verif:
+        donnee_deplacement = []
+        for bille_select in billes_select:
+            actual= plateau.get_bille(bille_select)
+            x, y = actual.get_x(), actual.get_y()
+            cercles.remove((x, y, plateau.RAYON + 2))
+            pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5)
+            new_pos = trouver_position(bille_select,trouver_direction(mouvement))
+            new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y()
+            donnee_deplacement.append((new_pos,new_x,new_y,actual.get_id(),actual.get_couleur()))
+            effacer_bille(plateau, bille_select, x, y ,plateau.get_bille(new_pos).get_id())
+            actual= plateau.get_bille(bille_select)
+        for donnee in donnee_deplacement:
+            deplacer_bille(plateau,donnee[0],donnee[1],donnee[2],donnee[3],donnee[4])
+    else: print("mouvement impossible")
 
-def deplacer_bille(plateau, bille,x,y,cpt, color, target,new_x,new_y,t_cpt):
+def effacer_bille(plateau, bille,x,y,t_cpt):
+    """
+    Fonction qui permet d'effacer une bille sur le plateau de jeu
+    """
+    plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
+
+
+def netttoye(plateau,cercles):
+    for cercle in cercles:
+        x,y,r = cercle
+        pygame.draw.circle(plateau.SCREEN,(139, 69, 19), (x, y), r + 3,5)
+        cercles.remove((x, y, plateau.RAYON + 2))
+
+def deplacer_bille(plateau, target,new_x,new_y, cpt, color):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu
     """
     plateau.plateau[target] = Bille(plateau.SCREEN, color, new_x, new_y, cpt, plateau.RAYON)
-    plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
     
+    
+def alignement(billes_select, bille):
+    """
+    Fonction qui permet de verifier si les billes selectionnees sont alignees
+    """
+    print(f"billes_select : {billes_select} bille : {bille}")
+    if billes_select[0] == bille[0] and int(billes_select[1]) - int(bille[1]) in [-1,-2,2,1]:
+        return "horizontale"
+    elif billes_select[1] == bille[1] and ord(billes_select[0]) - ord(bille[0]) in [-1,1]:
+        return "DiagonaleMemeNumero"
+    elif ord(billes_select[0]) - ord(bille[0]) in [-1,1] and int(billes_select[1]) - int(bille[1]) in [-1,1]:
+        return "diagonale"
+    else :
+        print (f"billes_select : {billes_select} bille : {bille}")
+    
+    return ""
     
 
 
