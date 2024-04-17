@@ -218,7 +218,7 @@ def verification_mouvement(plateau,pos_bille, direction,billes_select):
     if key in plateau.plateau and (plateau.get_bille(key).get_couleur() == (101, 67, 32) or key in billes_select):
         return True; #retourne vrai si le mouvement est possible c.a.d si la bille est vide ou si la bille est selectionnee
     elif key in plateau.plateau and plateau.get_bille(key).get_couleur() != plateau.get_bille(pos_bille).get_couleur():
-        return "sumito?";
+        return verification_sumito(plateau,billes_select,direction)[0];
     print(f"mouvement impossible de {pos_bille} vers {chr(lettre+boussole[direction][0])+str(num+boussole[direction][1])}")
     return False; #retourne faux si le mouvement est impossible 
 
@@ -322,7 +322,7 @@ def deplacement(plateau, billes_select, bille, cercles):
             x, y = actual.get_x(), actual.get_y(); #coordonnes de la bille selectionner pour le deplacement
             if  (x, y, plateau.RAYON + 2)  in cercles:
                 cercles.remove((x, y, plateau.RAYON + 2))
-            pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5); #dessine un cercle vide pour effacer le cercle de selection
+                pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5); #dessine un cercle vide pour effacer le cercle de selection
             new_pos = trouver_position(bille_select,trouver_direction(mouvement)); #trouve la nouvelle position de la bille en fonction de la direction
             try :
                 new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y();#coordonnes de la nouvelle position de la bille
@@ -333,8 +333,12 @@ def deplacement(plateau, billes_select, bille, cercles):
         for donnee in donnee_deplacement:
             deplacer_bille(plateau,donnee[0],donnee[1],donnee[2],donnee[3],donnee[4]); #deplace les billes
     else: 
-        print("mouvement impossible"); #affiche un message d'erreur si le mouvement est impossible
-        netttoye(plateau,cercles); #nettoie le plateau de jeu
+        print("mouvement impossible");#affiche un message d'erreur si le mouvement est impossible
+        for cercle in cercles:
+             #nettoie le plateau de jeu
+            x,y,r = cercle
+            pygame.draw.circle(plateau.SCREEN,(139, 69, 19), (x, y), r,6)
+            cercles.remove((x, y, r)) 
 
 def effacer_bille(plateau, bille,x,y,t_cpt):
     """
@@ -343,13 +347,7 @@ def effacer_bille(plateau, bille,x,y,t_cpt):
     plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
 
 
-def netttoye(plateau,cercles):
-    """ fonction qui permet de nettoyer le plateau de jeu. on efface les cercles de selection des billes"""
-    for cercle in cercles:
-        x,y,r = cercle
-        pygame.draw.circle(plateau.SCREEN,(139, 69, 19), (x, y), r + 3,5)
-        cercles.remove((x, y, plateau.RAYON + 2))
-
+    pass
 def deplacer_bille(plateau, target,new_x,new_y, cpt, color):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu. on remplace la bille par une autre bille a une nouvelle position
@@ -361,7 +359,6 @@ def alignement(billes_select, bille):
     """
     Fonction qui permet de verifier si les billes selectionnees sont alignees
     """
-    print(f"billes_select : {billes_select} bille : {bille}")
     if billes_select[0] == bille[0] and int(billes_select[1]) - int(bille[1]) in [-1,1]: 
         """ ex : A1 A2 """
         return "horizontale"
@@ -371,10 +368,8 @@ def alignement(billes_select, bille):
     elif ord(billes_select[0]) - ord(bille[0]) in [-1,1] and int(billes_select[1]) - int(bille[1]) in [-1,1]:
         """ ex : A1 B2 """
         return "diagonale"
-    else :
-        print (f"billes_select : {billes_select} bille : {bille}")
-    
-    return ""; #si billes non alignees
+    else: 
+        return ""; #si billes non alignees
     
 
 
