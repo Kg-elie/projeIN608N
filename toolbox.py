@@ -313,7 +313,8 @@ def deplacement(plateau, billes_select, bille, cercles):
 
     if verif:
         if verif_sumito[0]:
-           
+            print(f" sumito possible en poussant {verif_sumito[1]}")
+            billes_select.extend(verif_sumito[1])
             
         donnee_deplacement = [] ; #stocke les nouvelles position position des billes a deplacer
         for bille_select in billes_select:
