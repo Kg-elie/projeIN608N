@@ -241,7 +241,7 @@ def verification_mouvement(plateau,pos_bille, direction,billes_select):
     return False; #retourne faux si le mouvement est impossible 
 
 def front_sumito(billes_select,direction) :
-    """ donne quel bille est en face de la bille adverse """
+    """ donne quel bille est en face de la bille adverse si il y a sumito"""
     pos = billes_select[0]
     for bille in billes_select:
         lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
@@ -269,11 +269,11 @@ def front_sumito(billes_select,direction) :
 
 
 def verification_sumito(plateau,billes_select, direction):
-    force = len(billes_select)
-    front = front_sumito(billes_select,direction)
-    couleur_joueur = plateau.get_bille(front).get_couleur()
-    bille_adverse = []
-    possibilite = True
+    force = len(billes_select) # combien de bille font le sumito sumito
+    front = front_sumito(billes_select,direction) #bille en face de la bille adverse
+    couleur_joueur = plateau.get_bille(front).get_couleur() #couleur du joueur
+    bille_adverse = [] #liste des billes adverses a deplacer
+    possibilite = True 
     for i in range(force):
         pos_adverse = trouver_position(front,direction)
         try:
@@ -281,17 +281,17 @@ def verification_sumito(plateau,billes_select, direction):
         except:
             return True, bille_adverse
         if i == 0 and couleur_pos == (101, 67, 32):
-                return False, bille_adverse
+                return False, bille_adverse # si la premiere bille est vide
         if couleur_pos == (101, 67, 32):
-                return True, bille_adverse
+                return True, bille_adverse # si il y a bille est vide 
         if couleur_pos != couleur_joueur:
             if i == force - 1:
-                return False, bille_adverse
-            possibilite *= True
+                return False, bille_adverse # si il y le meme nombre de bille adverse que de bille du joueur
+            possibilite *= True 
             front = pos_adverse
             bille_adverse.append(pos_adverse)
         else:
-            possibilite *= False
+            possibilite *= False # si il y a une bille du joueur
             break
     return possibilite, bille_adverse
         
@@ -303,7 +303,7 @@ def deplacement(plateau, billes_select, bille, cercles):
     Fonction qui permet de receuillirtoutes les inormations pour le deplacement 
     d'une bille sur le plateau de jeu Utilisation de récursivité ? 
     """
-    print(f" liste des billes selectionner{billes_select}")
+    
     """coordonnes de la bille selectionner pour le deplacement"""
     new_x, new_y = plateau.get_bille(bille).get_x(), plateau.get_bille(bille).get_y()
     x,y = plateau.get_bille(billes_select[-1]).get_x(),plateau.get_bille(billes_select[-1]).get_y()
@@ -326,13 +326,14 @@ def deplacement(plateau, billes_select, bille, cercles):
     verif = True
     for bille in billes_select:
         verif*=verification_mouvement(plateau,bille,trouver_direction(mouvement),billes_select)
+    """ verification de la validite du sumito si il y a sumito"""
     verif_sumito = verification_sumito(plateau,billes_select,trouver_direction(mouvement))
     print(f"sumito ?  {verif_sumito[0]}")
 
     if verif:
         if verif_sumito[0]:
             print(f" sumito possible en poussant {verif_sumito[1]}")
-            billes_select.extend(verif_sumito[1])
+            billes_select.extend(verif_sumito[1]) #ajoute les billes adverses a deplacer
             
         donnee_deplacement = [] ; #stocke les nouvelles position position des billes a deplacer
         for bille_select in billes_select:
@@ -350,6 +351,7 @@ def deplacement(plateau, billes_select, bille, cercles):
             effacer_bille(plateau, bille_select, x, y ,plateau.get_bille(new_pos).get_id()); #efface la bille
         for donnee in donnee_deplacement:
             deplacer_bille(plateau,donnee[0],donnee[1],donnee[2],donnee[3],donnee[4]); #deplace les billes
+        return True
     else: 
         print("mouvement impossible");#affiche un message d'erreur si le mouvement est impossible
         for cercle in cercles:
@@ -357,6 +359,7 @@ def deplacement(plateau, billes_select, bille, cercles):
             x,y,r = cercle
             pygame.draw.circle(plateau.SCREEN,(139, 69, 19), (x, y), r,6)
             cercles.remove((x, y, r)) 
+        return False
 
 def effacer_bille(plateau, bille,x,y,t_cpt):
     """

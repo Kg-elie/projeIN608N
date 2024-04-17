@@ -65,22 +65,21 @@ def game(SCREEN):
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:
                         """ gestion du deplacement des billes selectionnées """
                         if bille.get_couleur() == VIDE  :
-                            print("deplacemnt bille vide")
+                            print("deplacement bille vide")
                             if len(billes_select) > 0:
-                                toolbox.deplacement(
-                                    plateau, billes_select, place, cercles)
+                                if toolbox.deplacement(
+                                plateau, billes_select, place, cercles) :
+                                    turn = (turn + 1) % 2
                                 billes_select = []
-                                alignement = ""
-                                turn = (turn + 1) % 2
                                 break
                             elif len(billes_select) == 0:
                                 break
                         elif  bille.get_couleur() !=  player[turn] and len(billes_select) > 0 :
                             print("bille adverse")
-                            toolbox.deplacement(
-                                plateau, billes_select, place, cercles)
+                            if toolbox.deplacement(
+                                plateau, billes_select, place, cercles) :
+                                turn = (turn + 1) % 2
                             billes_select = []
-                            turn = (turn + 1) % 2
                             break
                          
                         elif place in billes_select:
@@ -99,7 +98,6 @@ def game(SCREEN):
                                 billes_select.append(place)
                                 cercles.append(
                                     (bille.get_x(), bille.get_y(), RAYON + 2))
-                                print(billes_select)
                                 break
 
                         elif  len(billes_select) < 3:
@@ -122,7 +120,7 @@ def game(SCREEN):
                                     (bille.get_x(), bille.get_y(), RAYON + 2))
 
                             
-                print(billes_select)    
+                print(f" liste des billes selectionner{billes_select}")
                                     
             
 
