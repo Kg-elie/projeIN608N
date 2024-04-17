@@ -120,6 +120,25 @@ class Plateau:
         """
         return "Plateau : " + str(self.plateau)
 
+    def verif_victoire(self):
+        """
+        permet de verifier si un joueur a gagner la partie
+        """
+        print(len(self.plateau))
+        red = 0
+        blue = 0
+        for bille in self.plateau.values():
+            if bille.get_couleur() == (0, 0, 255):
+                blue += 1
+            elif bille.get_couleur() == (255, 0, 0):
+                red += 1
+        if red == 8:
+            return "blue"
+        elif blue == 8:
+            return "red"
+        else:
+            return ""
+
 
 class Bille:
     """

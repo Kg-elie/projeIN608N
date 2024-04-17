@@ -36,7 +36,10 @@ def game(SCREEN):
     while running:
 
         
-         
+        if gagnant := plateau.verif_victoire() :
+            running = False
+            print(f"victoire de {gagnant} ")
+            continue
         if turn == 0:
             player_turn = toolbox.get_font(45).render(
                 "blue's turn", True, "BLACK")
