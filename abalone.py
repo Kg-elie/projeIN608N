@@ -55,7 +55,7 @@ def game(SCREEN):
                 for place, bille in plateau.get_plateau().items():
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:
                         """ gestion du deplacement des billes selectionnées """
-                        if bille.get_couleur() == VIDE:
+                        if bille.get_couleur() == VIDE  :
                             print("deplacemnt bille vide")
                             if len(billes_select) > 0:
                                 toolbox.deplacement(
@@ -68,6 +68,16 @@ def game(SCREEN):
                                     player = 1
                             elif len(billes_select) == 0:
                                 break
+                        elif len(billes_select) != 0 and bille.get_couleur() !=  plateau.get_bille(billes_select[-1]).get_couleur() and bille.get_couleur() != VIDE:
+                            print("bille adverse")
+                            toolbox.deplacement(
+                                plateau, billes_select, place, cercles)
+                            billes_select = []
+                            if player == 1:
+                                player = 2
+                            else:
+                                player = 1
+                            break
                          
                         elif place in billes_select:
                             """ bille selectionnée supprimer """
@@ -106,9 +116,10 @@ def game(SCREEN):
                                     (bille.get_x(), bille.get_y(), RAYON + 2))
 
                             elif bille.get_couleur != plateau.get_bille(billes_select[-1]).get_couleur():
-                                """ verification de la couleur pour gere le deplacement des billes"""
-                                print("choix bille adverse")
-                                toolbox.deplacement(billes_select, place)
+                                """ verification de la couleur pour gere le deplacement des billes """
+                                print("choix bille adverse") 
+                                toolbox.deplacement(
+                                    plateau, billes_select, place, cercles)
                                 billes_select = []
                                 if player == 1:
                                     player = 2

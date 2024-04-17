@@ -202,7 +202,6 @@ def trouver_position(pos_bille,direction):
     lettre,num = ord(pos_bille[0]),int(pos_bille[1]); #separes les coordonnes de la bille
     boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}; #dictionnaire qui permet de trouver la nouvelle position de la bille
     new_pos = (chr(lettre+boussole[direction][0]),str(num+boussole[direction][1])) ; #trouve la nouvelle position de la bille
-    print(f"position {pos_bille} vers {new_pos[0]+new_pos[1]} avec un mouvement : {direction}")
     return new_pos[0]+new_pos[1]
 
 def verification_mouvement(plateau,pos_bille, direction,billes_select):
@@ -211,13 +210,75 @@ def verification_mouvement(plateau,pos_bille, direction,billes_select):
     """
     lettre,num = ord(pos_bille[0]),int(pos_bille[1]); #separes les coordonnes de la bille
     boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}; #dictionnaire qui permet de trouver la nouvelle position de la bille
-    if plateau.get_bille(chr(lettre+boussole[direction][0])+
-        str(num+boussole[direction][1])).get_couleur() == (101, 67, 32) or chr(
-        lettre+boussole[direction][0])+str(num+boussole[direction][1]) in billes_select:
-
+    try:
+        key = chr(lettre+boussole[direction][0])+str(num+boussole[direction][1]); #trouve la nouvelle position de la bille
+    except :
+        print(f"mouvement impossible de {pos_bille} "); #affiche un message d'erreur si le mouvement est impossible car la position n'existe pas
+        return False
+    if key in plateau.plateau and (plateau.get_bille(key).get_couleur() == (101, 67, 32) or key in billes_select):
         return True; #retourne vrai si le mouvement est possible c.a.d si la bille est vide ou si la bille est selectionnee
+    elif key in plateau.plateau and plateau.get_bille(key).get_couleur() != plateau.get_bille(pos_bille).get_couleur():
+        return "sumito?";
     print(f"mouvement impossible de {pos_bille} vers {chr(lettre+boussole[direction][0])+str(num+boussole[direction][1])}")
     return False; #retourne faux si le mouvement est impossible 
+
+def front_sumito(billes_select,direction) :
+    """ donne quel bille est en face de la bille adverse """
+    pos = billes_select[0]
+    for bille in billes_select:
+        lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
+        match direction:
+            case "NE": 
+                if ord(bille[0]) < ord(pos[0]) and int(bille[1]) == int(pos[1]):
+                    pos = bille
+            case "NW":
+                if ord(bille[0]) < ord(pos[0]) and int(bille[1]) < int(pos[1]):
+                    pos = bille
+            case "SE":
+                if ord(bille[0]) > ord(pos[0]) and int(bille[1]) > int(pos[1]):
+                    pos = bille
+            case "SW":
+                if ord(bille[0]) > ord(pos[0]) and int(bille[1]) == int(pos[1]):
+                    pos = bille
+            case "E":
+                if ord(bille[0]) == ord(pos[0]) and int(bille[1]) > int(pos[1]):
+                    pos = bille
+            case "W":
+                if ord(bille[0]) == ord(pos[0]) and int(bille[1]) < int(pos[1]):
+                    pos = bille
+    return pos
+
+
+
+def verification_sumito(plateau,billes_select, direction):
+    force = len(billes_select)
+    front = front_sumito(billes_select,direction)
+    couleur_joueur = plateau.get_bille(front).get_couleur()
+    bille_adverse = []
+    possibilite = True
+    for i in range(force):
+        pos_adverse = trouver_position(front,direction)
+        try:
+            couleur_pos = plateau.get_bille(pos_adverse).get_couleur() 
+        except:
+            return True, bille_adverse
+        if i == 0 and couleur_pos == (101, 67, 32):
+                return False, bille_adverse
+        if couleur_pos == (101, 67, 32):
+                return True, bille_adverse
+        if couleur_pos != couleur_joueur:
+            if i == force - 1:
+                return False, bille_adverse
+            possibilite *= True
+            front = pos_adverse
+            bille_adverse.append(pos_adverse)
+        else:
+            possibilite *= False
+            break
+    return possibilite, bille_adverse
+        
+
+
 
 def deplacement(plateau, billes_select, bille, cercles):
     """
@@ -228,6 +289,7 @@ def deplacement(plateau, billes_select, bille, cercles):
     """coordonnes de la bille selectionner pour le deplacement"""
     new_x, new_y = plateau.get_bille(bille).get_x(), plateau.get_bille(bille).get_y()
     x,y = plateau.get_bille(billes_select[-1]).get_x(),plateau.get_bille(billes_select[-1]).get_y()
+    
     """analyse de la direstion du dplacement"""
     mouvement = ""
     if new_x == x:
@@ -246,20 +308,32 @@ def deplacement(plateau, billes_select, bille, cercles):
     verif = True
     for bille in billes_select:
         verif*=verification_mouvement(plateau,bille,trouver_direction(mouvement),billes_select)
+    verif_sumito = verification_sumito(plateau,billes_select,trouver_direction(mouvement))
+    print(f"sumito ?  {verif_sumito[0]}")
+
     if verif:
+        if verif_sumito[0]:
+           
+            
         donnee_deplacement = [] ; #stocke les nouvelles position position des billes a deplacer
         for bille_select in billes_select:
             actual= plateau.get_bille(bille_select)
             x, y = actual.get_x(), actual.get_y(); #coordonnes de la bille selectionner pour le deplacement
-            cercles.remove((x, y, plateau.RAYON + 2))
+            if  (x, y, plateau.RAYON + 2)  in cercles:
+                cercles.remove((x, y, plateau.RAYON + 2))
             pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5); #dessine un cercle vide pour effacer le cercle de selection
             new_pos = trouver_position(bille_select,trouver_direction(mouvement)); #trouve la nouvelle position de la bille en fonction de la direction
-            new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y(); #coordonnes de la nouvelle position de la bille
-            donnee_deplacement.append((new_pos,new_x,new_y,actual.get_id(),actual.get_couleur())); #ajoute les nouvelles position  de la bille
+            try :
+                new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y();#coordonnes de la nouvelle position de la bille
+                donnee_deplacement.append((new_pos,new_x,new_y,actual.get_id(),actual.get_couleur()));#ajoute les nouvelles position  de la bille  
+            except:
+                continue
             effacer_bille(plateau, bille_select, x, y ,plateau.get_bille(new_pos).get_id()); #efface la bille
         for donnee in donnee_deplacement:
             deplacer_bille(plateau,donnee[0],donnee[1],donnee[2],donnee[3],donnee[4]); #deplace les billes
-    else: print("mouvement impossible"); #affiche un message d'erreur si le mouvement est impossible
+    else: 
+        print("mouvement impossible"); #affiche un message d'erreur si le mouvement est impossible
+        netttoye(plateau,cercles); #nettoie le plateau de jeu
 
 def effacer_bille(plateau, bille,x,y,t_cpt):
     """
@@ -308,6 +382,12 @@ def rencontre_bille(billes_select, bille):
     Fonction qui deplace une bille en confrontant celles de l'adversaire
     """
     pass
+
+def confrontation(plateau,bille,mouvement):
+    """
+    Fonction qui permet de gerer la confrontation entre deux billes
+    """
+    bille 
 
 
 def draw_regular_polygon(surface, couleur, nb_cote,
