@@ -124,7 +124,6 @@ class Plateau:
         """
         permet de verifier si un joueur a gagner la partie
         """
-        print(len(self.plateau))
         red = 0
         blue = 0
         for bille in self.plateau.values():
