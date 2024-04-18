@@ -1,6 +1,7 @@
 import pygame
 import sys
 import toolbox
+import minmax
 import random
 from time import sleep
 
@@ -19,7 +20,7 @@ BLUE = (0, 0, 255)
 
 cercles = []
 
-turn = 1
+turn = 0
 player = [BLUE, RED]
 def game_player_IA(SCREEN):
     """
@@ -175,6 +176,7 @@ def game_player_IA(SCREEN):
 
                             
                 print(f" liste des billes selectionner{billes_select}")
+                print(f" le score du plateau pour l'ia est de {minmax.eval_score(plateau)}")
                                     
             
 
