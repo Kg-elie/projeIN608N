@@ -275,7 +275,10 @@ def verification_sumito(plateau,billes_select, direction):
     bille_adverse = [] #liste des billes adverses a deplacer
     possibilite = True 
     for i in range(force):
-        pos_adverse = trouver_position(front,direction)
+        try:   
+            pos_adverse = trouver_position(front,direction)
+        except:
+            return False, bille_adverse
         try:
             couleur_pos = plateau.get_bille(pos_adverse).get_couleur() 
         except:
@@ -342,8 +345,9 @@ def deplacement(plateau, billes_select, bille, cercles):
             if  (x, y, plateau.RAYON + 2)  in cercles:
                 cercles.remove((x, y, plateau.RAYON + 2))
                 pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5); #dessine un cercle vide pour effacer le cercle de selection
-            new_pos = trouver_position(bille_select,trouver_direction(mouvement)); #trouve la nouvelle position de la bille en fonction de la direction
+             
             try :
+                new_pos = trouver_position(bille_select,trouver_direction(mouvement));#trouve la nouvelle position de la bille en fonction de la direction
                 new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y();#coordonnes de la nouvelle position de la bille
                 donnee_deplacement.append((new_pos,new_x,new_y,actual.get_id(),actual.get_couleur()));#ajoute les nouvelles position  de la bille  
             except:
@@ -380,7 +384,7 @@ def alignement(billes_select, bille):
     """
     Fonction qui permet de verifier si les billes selectionnees sont alignees
     """
-    if billes_select[0] == bille[0] and int(billes_select[1]) - int(bille[1]) in [-1,1]: 
+    if billes_select[0] == bille[0] and int(billes_select[1]) - int(bille[1]) in [-1,1] : 
         """ ex : A1 A2 """
         return "horizontale"
     elif billes_select[1] == bille[1] and ord(billes_select[0]) - ord(bille[0]) in [-1,1]:
@@ -430,3 +434,74 @@ def distance(point1, point2):
 
 def get_font(size):
     return pygame.font.Font("font.ttf", size)
+
+def simulate_click(position):
+    pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': position, 'button': 1}))
+
+
+def mouvement_possible_IA(plateau):
+    """
+    Fonction qui permet de gerer le deplacement des billes de l'IA
+    """
+    billes = []
+    for pos, bille in plateau.get_plateau().items():
+        if bille.get_couleur() == (255, 0, 0):
+            if move := voisins_jouables(plateau, pos):
+                billes.append((pos, bille))
+    return billes
+
+def direction_IA(plateau, bille, destination):
+
+    new_x, new_y = plateau.get_bille(destination).get_x(), plateau.get_bille(destination).get_y()
+    x,y = plateau.get_bille(bille).get_x(),plateau.get_bille(bille).get_y()
+    
+    """analyse de la direstion du dplacement"""
+    mouvement = ""
+    if new_x == x:
+        mouvement +="/"
+    elif new_x >= x:
+        mouvement += "+"
+    else:
+        mouvement += "-"
+    if new_y == y:
+        mouvement +="/"
+    elif new_y >= y:
+        mouvement += "+"
+    else:
+        mouvement += "-"
+    return trouver_direction(mouvement)
+
+def coequipier_voisins(plateau, bille,direction):
+    """
+    Fonction qui permet de trouver les voisins alliés d'une bille
+    """
+    lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
+    boussole = {"NE":(1,0),"NW":(1,1),"SE":(-1,-1),"SW":(-1,0),"E":(0,-1),"W":(0,1)}; #dictionnaire qui permet de trouver l'allié
+    voisins = []
+    sens = boussole[direction]
+    for _ in range(2):
+        try:
+            key = chr(lettre+sens[0])+str(num+sens[1]); #trouve la nouvelle position de la bille
+            if plateau.get_bille(key).get_couleur() == (255, 0, 0):
+                lettre,num = ord(key[0]),int(key[1])
+                print(key)
+                voisins.append(key)
+        except:
+            continue
+    return voisins
+
+def voisins_jouables(plateau, bille):
+    """
+    Fonction qui permet de trouver les voisins libres d'une bille
+    """
+    lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
+    boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}; #dictionnaire qui permet de trouver la nouvelle position de la bille
+    voisins = []
+    for direction in boussole:
+        try:
+            key = chr(lettre+boussole[direction][0])+str(num+boussole[direction][1]); #trouve la nouvelle position de la bille
+            if plateau.get_bille(key).get_couleur() == (101, 67, 32) or plateau.get_bille(key).get_couleur() == (0, 0, 255):
+                voisins.append(key)
+        except:
+            continue
+    return voisins
