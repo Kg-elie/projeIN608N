@@ -20,7 +20,7 @@ BLUE = (0, 0, 255)
 
 cercles = []
 
-turn = 0
+turn = 1
 player = [BLUE, RED]
 def game_player_IA(SCREEN):
     """
@@ -60,15 +60,20 @@ def game_player_IA(SCREEN):
 
         if turn == 1 and len(billes_select) == 0:
             print("tour de l'IA")
-            place_IA,bille_IA = random.choice(toolbox.mouvement_possible_IA(plateau))
-            billes_select = [place_IA]
+            billes_jouables = toolbox.billes_jouables_IA(plateau)
+            meilleur_mouvement = minmax.choix_billes(plateau,billes_jouables)
+            print(f"le meilleur mouvement dans cette position est {meilleur_mouvement}")
+            place_IA = meilleur_mouvement[1]
+            billes_IA = [plateau.get_bille(i) for i in place_IA]
+            billes_select =place_IA
             print(f"{place_IA} billes selectionner par l'IA") 
-            pygame.mouse.set_pos(bille_IA.get_x(), bille_IA.get_y())
-            GAME_POS = pygame.mouse.get_pos()
-            toolbox.simulate_click((bille_IA.get_x(), bille_IA.get_y()))
-            cercles.append((bille_IA.get_x(), bille_IA.get_y(), RAYON + 2))
+            for bille_IA in billes_IA:
+                pygame.mouse.set_pos(bille_IA.get_x(), bille_IA.get_y())
+                GAME_POS = pygame.mouse.get_pos()
+                toolbox.simulate_click((bille_IA.get_x(), bille_IA.get_y()))
+                cercles.append((bille_IA.get_x(), bille_IA.get_y(), RAYON + 2))
 
-            sleep(1.5)
+            sleep(0.5)
             
 
         for event in pygame.event.get():
@@ -78,40 +83,32 @@ def game_player_IA(SCREEN):
             
             if   event.type == pygame.MOUSEBUTTONDOWN:
                 if turn == 1 and len(billes_select) > 0:
-                            if   move := toolbox.voisins_jouables(plateau, billes_select[0]):
-                                print(f"mouvement possible {move}")
-                                move = random.choice(move)
-                                bille = plateau.get_bille(move)
-                                direction = toolbox.direction_IA(plateau,billes_select[0],move)
-                                print(f"direction du mouvement {direction}")
-                                allie = toolbox.coequipier_voisins(plateau, billes_select[0],direction)
-                                print(f"le pion peut etre soutenue par {allie}")
-                                billes_select.extend(allie)
-                                toolbox.simulate_click((bille.get_x(), bille.get_y()))
-                                print(f"{billes_select} deplacer vers {move}")
-                                GAME_POS = pygame.mouse.get_pos()
-                                if bille.get_couleur() == VIDE  :
-                                    print("deplacement bille vide")
-                                    if len(billes_select) > 0:
-                                        if toolbox.deplacement(
-                                        plateau, billes_select, move, cercles) :
-                                            turn = (turn + 1) % 2
-                                        billes_select = []
-                                        break
-                                    elif len(billes_select) == 0:
-                                        break
-                                elif  bille.get_couleur() !=  player[turn] and len(billes_select) > 0 :
-                                    print("bille adverse")
-                                    if toolbox.deplacement(
-                                        plateau, billes_select, move, cercles) :
-                                        turn = (turn + 1) % 2
-                                    billes_select = []
-                                    break
-                            else:
-                                print("pas de mouvement possible")
-                                
-                                billes_select = []
-                                break
+                    move = meilleur_mouvement[2]
+                    bille = plateau.get_bille(move)
+                    direction = toolbox.direction_IA(plateau,billes_select[0],move)
+                    print(f"direction du mouvement {direction}")
+                    
+                    toolbox.simulate_click((bille.get_x(), bille.get_y()))
+                    print(f"{billes_select} deplacer vers {move}")
+                    GAME_POS = pygame.mouse.get_pos()
+                    if bille.get_couleur() == VIDE  :
+                        print("deplacement bille vide")
+                        if len(billes_select) > 0:
+                            if toolbox.deplacement(
+                            plateau, billes_select, move, cercles) :
+                                turn = (turn + 1) % 2
+                            billes_select = []
+                            break
+                        elif len(billes_select) == 0:
+                            break
+                    elif  bille.get_couleur() !=  player[turn] and len(billes_select) > 0 :
+                        print("bille adverse")
+                        if toolbox.deplacement(
+                            plateau, billes_select, move, cercles) :
+                            turn = (turn + 1) % 2
+                        billes_select = []
+                        break
+                            
                 for place, bille in plateau.get_plateau().items():
                     
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:

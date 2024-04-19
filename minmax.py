@@ -10,9 +10,9 @@ BROWN = (139, 69, 19)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-COEF_CENTRE = 2
+COEF_CENTRE = 1.5
 COEF_DENSITE = 1
-COEF_ELIMINATION = 3
+COEF_ELIMINATION = 4
 
 class node:
     def __init__(self, children= [], parent=None, depth=0, score=0, move = None):
@@ -79,15 +79,47 @@ def eval_score(plateau):
     densite_ennemi = distance_allie(plateau, BLUE)
     center_ennemi = distance_center(plateau, BLUE)
     elimination_ennemi = bille_elimine(plateau, BLUE)
-    print(f"center allie : {center_allie} densite allie : {densite_allie} elimination allie : {elimination_allie}")
-    print(f"center ennemi : {center_ennemi} densite ennemi : {densite_ennemi} elimination ennemi : {elimination_ennemi}")
+ 
     
     score_allie = COEF_CENTRE * center_allie + COEF_DENSITE * densite_allie + COEF_ELIMINATION * elimination_allie
     score_ennemi = COEF_CENTRE * center_ennemi + COEF_DENSITE * densite_ennemi + COEF_ELIMINATION * elimination_ennemi
-    print(f"score allie : {score_allie} score ennemi : {score_ennemi}")
+
     score = score_allie - score_ennemi
 
             
     return  round(score,2)
+def preview(plateau,billes, direction):
+    plateau = plateau.copy()
+    new_pos = []
+    ancienne_pos = []
+    for pos in billes:
+        ancienne_pos.append(plateau.get_bille(pos))
+        try: 
+            new = toolbox.trouver_position( pos, direction)
+            new_pos.append(new)
+            plateau.get_plateau()[pos] = plateau.get_bille(new)
+            plateau.get_plateau()[new] =ancienne_pos[-1]
+        except:
+            return -1000
+
+        
+    return eval_score(plateau)
 
 
+    pass
+
+def choix_billes(plateau, billes_jouables):
+    meilleur = None
+    for bille in billes_jouables:
+        bille =[ bille[0]]
+        
+        possibilite,alliance = toolbox.voisins_jouables(plateau, bille[0])
+        
+        for pos,allie in zip(possibilite,alliance):
+            bille = [bille[0]]
+            bille.extend(allie)
+            direction = toolbox.direction_IA(plateau,bille[0],pos)
+            score = preview(plateau,bille,direction)
+            if meilleur == None or score > meilleur[0]:
+                meilleur = (score,bille,pos)
+    return meilleur

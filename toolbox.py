@@ -40,7 +40,7 @@ class Plateau:
     Classe Plateau qui permet de creer un plateau de jeu, c'est la class main de la gestion du jeu
     """
 
-    def __init__(self, SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON):
+    def __init__(self, SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON, copie = False):
         """ 
         Constructeur de la classe Plateau
         """
@@ -53,6 +53,7 @@ class Plateau:
         self.MARGIN_Y = (WINDOW_SIZE[1] - self.GRID_WIDTH) // 2
         self.RAYON = RAYON
         self.SCREEN = SCREEN
+        self.copie = copie
         self.init_plateau(SCREEN)
 
     def init_plateau(self, SCREEN):
@@ -75,32 +76,33 @@ class Plateau:
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         cpt = 0
         "c'est les main de la methode qui permet de creer les billes et de les positionner sur le plateau on ne cree une bille que si la valeur de la matrice est 1 et on choisi la couleur de la bille en fonction de la valeur de la liste position"
-        for row in range(self.GRID_LENGTH):
-            difference = 0
-            for col in range(self.GRID_LENGTH):
-                if schema[row][col] == 1:
-                    if row % 2 == 1:
-                        x = self.MARGIN_X + col * self.CELL_SIZE + self.CELL_SIZE // 2 + 30
+        if not self.copie:
+            for row in range(self.GRID_LENGTH):
+                difference = 0
+                for col in range(self.GRID_LENGTH):
+                    if schema[row][col] == 1:
+                        if row % 2 == 1:
+                            x = self.MARGIN_X + col * self.CELL_SIZE + self.CELL_SIZE // 2 + 30
+                        else:
+                            x = self.MARGIN_X + col * self.CELL_SIZE + self.CELL_SIZE // 2
+                        y = self.MARGIN_Y + row * self.CELL_SIZE + self.CELL_SIZE // 2
+                        if row > 4:
+                            decalage = row - 4
+                            "permet de gerer les colonnes en diagonale"
+                        else:
+                            decalage = 0
+                        if position[cpt] == -1:
+                            self.plateau[chr(
+                                row+65) + str(col-difference + decalage)] = Bille(SCREEN, (255, 0, 0), x, y, cpt, self.RAYON)
+                        elif position[cpt] == 0:
+                            self.plateau[chr(
+                                row+65) + str(col-difference + decalage)] = Bille(SCREEN, (101, 67, 32), x, y, cpt, self.RAYON)
+                        else:
+                            self.plateau[chr(
+                                row+65) + str(col-difference + decalage)] = Bille(SCREEN, (0, 0, 255), x, y, cpt, self.RAYON)
+                        cpt += 1
                     else:
-                        x = self.MARGIN_X + col * self.CELL_SIZE + self.CELL_SIZE // 2
-                    y = self.MARGIN_Y + row * self.CELL_SIZE + self.CELL_SIZE // 2
-                    if row > 4:
-                        decalage = row - 4
-                        "permet de gerer les colonnes en diagonale"
-                    else:
-                        decalage = 0
-                    if position[cpt] == -1:
-                        self.plateau[chr(
-                            row+65) + str(col-difference + decalage)] = Bille(SCREEN, (255, 0, 0), x, y, cpt, self.RAYON)
-                    elif position[cpt] == 0:
-                        self.plateau[chr(
-                            row+65) + str(col-difference + decalage)] = Bille(SCREEN, (101, 67, 32), x, y, cpt, self.RAYON)
-                    else:
-                        self.plateau[chr(
-                            row+65) + str(col-difference + decalage)] = Bille(SCREEN, (0, 0, 255), x, y, cpt, self.RAYON)
-                    cpt += 1
-                else:
-                    difference += 1
+                        difference += 1
 
     def get_plateau(self):
         """
@@ -119,6 +121,14 @@ class Plateau:
         permet d'afficher le plateau de jeu
         """
         return "Plateau : " + str(self.plateau)
+    
+    def copy(self):
+        """
+        permet de copier le plateau de jeu
+        """
+        copy = Plateau(self.SCREEN, self.WINDOW_SIZE, self.CELL_SIZE, self.GRID_LENGTH, self.RAYON, True)
+        copy.plateau = self.plateau.copy()
+        return copy
 
     def verif_victoire(self):
         """
@@ -439,9 +449,9 @@ def simulate_click(position):
     pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': position, 'button': 1}))
 
 
-def mouvement_possible_IA(plateau):
+def billes_jouables_IA(plateau):
     """
-    Fonction qui permet de gerer le deplacement des billes de l'IA
+    Fonction qui retourne les billes jouables par l'IA
     """
     billes = []
     for pos, bille in plateau.get_plateau().items():
@@ -455,7 +465,7 @@ def direction_IA(plateau, bille, destination):
     new_x, new_y = plateau.get_bille(destination).get_x(), plateau.get_bille(destination).get_y()
     x,y = plateau.get_bille(bille).get_x(),plateau.get_bille(bille).get_y()
     
-    """analyse de la direstion du dplacement"""
+    """analyse de la direstion du deplacement"""
     mouvement = ""
     if new_x == x:
         mouvement +="/"
@@ -484,7 +494,7 @@ def coequipier_voisins(plateau, bille,direction):
             key = chr(lettre+sens[0])+str(num+sens[1]); #trouve la nouvelle position de la bille
             if plateau.get_bille(key).get_couleur() == (255, 0, 0):
                 lettre,num = ord(key[0]),int(key[1])
-                print(key)
+                
                 voisins.append(key)
         except:
             continue
@@ -497,11 +507,31 @@ def voisins_jouables(plateau, bille):
     lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
     boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}; #dictionnaire qui permet de trouver la nouvelle position de la bille
     voisins = []
-    for direction in boussole:
+    allie = []
+    for direction in boussole.keys():
         try:
             key = chr(lettre+boussole[direction][0])+str(num+boussole[direction][1]); #trouve la nouvelle position de la bille
-            if plateau.get_bille(key).get_couleur() == (101, 67, 32) or plateau.get_bille(key).get_couleur() == (0, 0, 255):
+            alliance = []
+            alliance.extend(coequipier_voisins(plateau, bille,direction))
+            aligne = bille
+            
+            if plateau.get_bille(key).get_couleur() == (101, 67, 32) :
                 voisins.append(key)
+                for aide in alliance:
+                    if not alignement(aligne,aide):
+                        alliance.remove(aide)
+                    aligne = aide
+                allie.append(alliance)
+            
+            elif plateau.get_bille(key).get_couleur() == (0, 0, 255) and verification_sumito(plateau,[bille] + alliance,direction)[0] :
+                voisins.append(key)
+                for aide in alliance:
+                    if not alignement(aligne,aide):
+                        alliance.remove(aide)
+                    aligne = aide
+                allie.append(alliance)
+            print(f"fn : voisins de {bille} jouables{voisins} - alliance {allie} POUR direction {direction}")    
         except:
             continue
-    return voisins
+    
+    return voisins,allie
