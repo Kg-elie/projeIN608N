@@ -162,6 +162,8 @@ def game_player_IA(SCREEN):
                                 if len(billes_select) == 1:
                                     alignement = toolbox.alignement(
                                         billes_select[-1], place)
+                                    if not alignement:
+                                        continue
                                 elif toolbox.alignement(billes_select[-1], place) != alignement :
                                     """ verification de l'alignement"""
                                     print(toolbox.alignement(billes_select[-1], place))
