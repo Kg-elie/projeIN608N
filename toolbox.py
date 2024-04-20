@@ -368,9 +368,9 @@ def deplacement(plateau, billes_select, bille, cercles):
         return True
     else: 
         print("mouvement impossible");#affiche un message d'erreur si le mouvement est impossible
-        for cercle in cercles:
-             #nettoie le plateau de jeu
-            x,y,r = cercle
+        for _ in range(len(cercles)):
+            #nettoie le plateau de jeu
+            x,y,r = cercles[-1]
             pygame.draw.circle(plateau.SCREEN,(139, 69, 19), (x, y), r,6)
             cercles.remove((x, y, r)) 
         return False

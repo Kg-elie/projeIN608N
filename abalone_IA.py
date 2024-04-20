@@ -20,7 +20,7 @@ BLUE = (0, 0, 255)
 
 cercles = []
 
-turn = 1
+turn = 0
 player = [BLUE, RED]
 def game_player_IA(SCREEN):
     """
@@ -62,7 +62,6 @@ def game_player_IA(SCREEN):
             print("tour de l'IA")
             billes_jouables = toolbox.billes_jouables_IA(plateau)
             meilleur_mouvement = minmax.choix_billes(plateau,billes_jouables)
-            print(f"le meilleur mouvement dans cette position est {meilleur_mouvement}")
             place_IA = meilleur_mouvement[1]
             billes_IA = [plateau.get_bille(i) for i in place_IA]
             billes_select =place_IA
@@ -73,7 +72,7 @@ def game_player_IA(SCREEN):
                 toolbox.simulate_click((bille_IA.get_x(), bille_IA.get_y()))
                 cercles.append((bille_IA.get_x(), bille_IA.get_y(), RAYON + 2))
 
-            sleep(0.5)
+            sleep(1)
             
 
         for event in pygame.event.get():
@@ -140,7 +139,7 @@ def game_player_IA(SCREEN):
                             billes_select.remove(place)
                             cercles.remove(
                                 (bille.get_x(), bille.get_y(), RAYON + 2))
-                            pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5)
+                            pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (bille.get_x(), bille.get_y()), plateau.RAYON + 2,5)
                             break
 
                         elif len(billes_select) == 0:

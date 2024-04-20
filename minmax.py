@@ -12,8 +12,7 @@ BLUE = (0, 0, 255)
 
 COEF_CENTRE = 1.5
 COEF_DENSITE = 1
-COEF_ELIMINATION = 4
-
+COEF_ELIMINATION = 2.5
 class node:
     def __init__(self, children= [], parent=None, depth=0, score=0, move = None):
         self.move = move
@@ -42,7 +41,7 @@ def distance_center(plateau,color):
         if bille.get_couleur() == color:
             cpt += 1
             distance += max([abs(lettre-lettre_c),abs(num-num_c)])
-    return 4 - distance/cpt
+    return 4- distance/cpt
 
 
 def distance_allie(plateau,color):
@@ -62,6 +61,7 @@ def distance_allie(plateau,color):
     return 8 - moyenne/cpt_moyenne
 
 def bille_elimine(plateau,color):
+    """ retourne le nombre de bille elimine de l'adversaire"""
     cpt = 0
     for pos, bille in plateau.get_plateau().items():
         if bille.get_couleur() != color and bille.get_couleur() != VIDE:
@@ -92,16 +92,30 @@ def preview(plateau,billes, direction):
     plateau = plateau.copy()
     new_pos = []
     ancienne_pos = []
+    bille_vide = None
+    for bile in plateau.get_plateau().values():
+        if bile.get_couleur() == VIDE:
+            bille_vide = bile
+            break
+
+       
     for pos in billes:
         ancienne_pos.append(plateau.get_bille(pos))
         try: 
             new = toolbox.trouver_position( pos, direction)
             new_pos.append(new)
-            plateau.get_plateau()[pos] = plateau.get_bille(new)
-            plateau.get_plateau()[new] =ancienne_pos[-1]
+            if new in plateau.get_plateau().keys():
+                if pos == billes[-1]:
+                    plateau.get_plateau()[pos] = plateau.get_bille(new)
+                else:
+                    plateau.get_plateau()[pos] = bille_vide
+                plateau.get_plateau()[new] =ancienne_pos[-1]
+            else:
+                plateau.get_plateau()[pos] = plateau.get_bille(bille_vide)
+            
+            
         except:
             return -1000
-
         
     return eval_score(plateau)
 
