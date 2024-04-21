@@ -1,7 +1,9 @@
 import pygame
 import sys
-import abalone
+import abalone 
+import abalone_IA
 import toolbox
+import shared_data as sd
 
 
 def main_menu(SCREEN, BG):
@@ -13,13 +15,14 @@ def main_menu(SCREEN, BG):
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         MENU_TEXT = toolbox.get_font(
-            100).render('Main Menu', 1, (255, 255, 255))
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+            sd.FONT_SIZE*2.2).render('Main Menu', 1, (255, 255, 255))
+        MENU_RECT = MENU_TEXT.get_rect(center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//7.2))
 
-        PLAY_Button = toolbox.Button(image=None, pos=(640, 300), text_input="PLAY", font=toolbox.get_font(
-            75), base_color="#d7fcd4", hovering_color="Green")
-        QUIT_Button = toolbox.Button(image=None, pos=(640, 500), text_input="QUIT", font=toolbox.get_font(
-            75), base_color="#d7fcd4", hovering_color="Green")
+        PLAY_Button = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.4), text_input="PLAY", font=toolbox.get_font(
+            sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
+
+        QUIT_Button = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.44), text_input="QUIT", font=toolbox.get_font(
+            sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
@@ -33,7 +36,7 @@ def main_menu(SCREEN, BG):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_Button.checkForInput(MENU_MOUSE_POS):
-                    play(SCREEN)
+                    play(SCREEN, BG)
                 if QUIT_Button.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
@@ -41,24 +44,35 @@ def main_menu(SCREEN, BG):
         pygame.display.update()
 
 
-def play(SCREEN):
+def play(SCREEN, BG):
+    pygame.display.set_caption('Play')
+
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
 
-        PLAY_TEXT = toolbox.get_font(45).render(
-            "This is the PLAY screen.", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
+        PLAY_TEXT = toolbox.get_font(sd.FONT_SIZE).render(
+            "Choose a gamemode :", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-        GAME_Button = toolbox.Button(image=None, pos=(640, 360), text_input="PLAY GAME", font=toolbox.get_font(
-            75), base_color="WHITE", hovering_color="Green")
-        PLAY_BACK = toolbox.Button(image=None, pos=(640, 460), text_input="BACK", font=toolbox.get_font(
-            75), base_color="White", hovering_color="Green")
+        GAME_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//3, sd.WINDOW_SIZE[1]//2), text_input="1 vs 1", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
+        
+        AI_GAME_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//1.5, sd.WINDOW_SIZE[1]//2), text_input="1 vs AI", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
 
-        GAME_Button.changeColor(PLAY_MOUSE_POS)
-        GAME_Button.update(SCREEN)
+        PLAY_BACK = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.5), text_input="BACK", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="White", hovering_color="Green")
+        
+
+
+        GAME_BUTTON.changeColor(PLAY_MOUSE_POS)
+        GAME_BUTTON.update(SCREEN)
+
+        AI_GAME_BUTTON.changeColor(PLAY_MOUSE_POS)
+        AI_GAME_BUTTON.update(SCREEN)
 
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(SCREEN)
@@ -68,17 +82,19 @@ def play(SCREEN):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if GAME_Button.checkForInput(PLAY_MOUSE_POS):
+                if GAME_BUTTON.checkForInput(PLAY_MOUSE_POS):
                     abalone.game(SCREEN)
+                if AI_GAME_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                    abalone_IA.game_IA(SCREEN)
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                    main_menu()
+                    main_menu(SCREEN, BG)
+                
 
         pygame.display.update()
 
-
 if __name__ == "__main__":
     pygame.init()
-    SCREEN = pygame.display.set_mode((1280, 720))
+    SCREEN = pygame.display.set_mode(sd.WINDOW_SIZE)
     BG = pygame.image.load('bg.png')
     pygame.display.set_caption('Game')
     main_menu(SCREEN, BG)

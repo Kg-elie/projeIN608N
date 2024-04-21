@@ -1,24 +1,13 @@
 import pygame
 import sys
 import toolbox
+import shared_data as sd
 
-
-WINDOW_SIZE = (1280, 720)
-CELL_SIZE = 75
-GRID_LENGTH = 9
-
-RAYON = CELL_SIZE // 4
-
-WHITE = (255, 255, 255)
-VIDE = (101, 67, 32)
-BROWN = (139, 69, 19)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
 
 cercles = []
 
 turn = 0
-player = [BLUE, RED]
+player = [sd.BLUE, sd.RED]
 def game(SCREEN):
     """
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
@@ -27,12 +16,12 @@ def game(SCREEN):
     billes_select = []
     alignement = ""
     running = True
-    SCREEN.fill(WHITE)
-    toolbox.draw_regular_polygon(SCREEN, BROWN, 6, WINDOW_SIZE[1]//2 + 50,
-                                     (WINDOW_SIZE[0]//2, WINDOW_SIZE[1]//2), 0)
+    SCREEN.fill(sd.WHITE)
+    toolbox.draw_regular_polygon(SCREEN, sd.BROWN, 6, sd.WINDOW_SIZE[1]//2 + 50,
+                                     (sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), 0)
 
     plateau = toolbox.Plateau(
-            SCREEN, WINDOW_SIZE, CELL_SIZE, GRID_LENGTH, RAYON)
+            SCREEN, sd.WINDOW_SIZE, sd.CELL_SIZE, sd.GRID_LENGTH, sd.RAYON)
     while running:
 
         
@@ -43,13 +32,13 @@ def game(SCREEN):
         if turn == 0:
             player_turn = toolbox.get_font(45).render(
                 "blue's turn", True, "BLACK")
-            pygame.draw.rect(SCREEN, BLUE, (50, 50, 300, 100))
+            pygame.draw.rect(SCREEN, sd.BLUE, (50, 50, 300, 100))
             player_rect = player_turn.get_rect(center=(200, 100))
             SCREEN.blit(player_turn, player_rect)
         else:
             player_turn = toolbox.get_font(45).render(
                 "red's turn", True, "BLACK")
-            pygame.draw.rect(SCREEN, RED, (50, 50, 300, 100))
+            pygame.draw.rect(SCREEN, sd.RED, (50, 50, 300, 100))
             player_rect = player_turn.get_rect(center=(200, 100))
             SCREEN.blit(player_turn, player_rect)
 
@@ -62,9 +51,9 @@ def game(SCREEN):
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for place, bille in plateau.get_plateau().items():
-                    if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= RAYON and len(billes_select) <= 3:
+                    if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= sd.RAYON and len(billes_select) <= 3:
                         """ gestion du deplacement des billes selectionnées """
-                        if bille.get_couleur() == VIDE  :
+                        if bille.get_couleur() == sd.VIDE  :
                             print("deplacement bille vide")
                             if len(billes_select) > 0:
                                 if toolbox.deplacement(
@@ -87,8 +76,8 @@ def game(SCREEN):
                             print("suppression bille")
                             billes_select.remove(place)
                             cercles.remove(
-                                (bille.get_x(), bille.get_y(), RAYON + 2))
-                            pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5)
+                                (bille.get_x(), bille.get_y(), sd.RAYON + 2))
+                            pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (bille.get_x(), bille.get_y()), plateau.RAYON + 2,5)
                             break
 
                         elif len(billes_select) == 0:
@@ -97,7 +86,7 @@ def game(SCREEN):
                             if bille.get_couleur() == player[turn]:
                                 billes_select.append(place)
                                 cercles.append(
-                                    (bille.get_x(), bille.get_y(), RAYON + 2))
+                                    (bille.get_x(), bille.get_y(), sd.RAYON + 2))
                                 break
 
                         elif  len(billes_select) < 3:
@@ -119,7 +108,7 @@ def game(SCREEN):
                                 print("ajout bille")
                                 billes_select.append(place)
                                 cercles.append(
-                                    (bille.get_x(), bille.get_y(), RAYON + 2))
+                                    (bille.get_x(), bille.get_y(), sd.RAYON + 2))
 
                             
                 print(f" liste des billes selectionner{billes_select}")
@@ -137,17 +126,8 @@ def game(SCREEN):
 
 if __name__ == "__main__":
     BG = pygame.image.load('bg.png')
-    WINDOW_SIZE = (1280, 720)
-    CELL_SIZE = 75
-    GRID_LENGTH = 9
-
-    RAYON = CELL_SIZE // 4
-
-    WHITE = (255, 255, 255)
-    VIDE = (101, 67, 32)
-    BROWN = (139, 69, 19)
     pygame.init()
-    SCREEN = pygame.display.set_mode(WINDOW_SIZE)
+    SCREEN = pygame.display.set_mode(sd.WINDOW_SIZE)
     SCREEN.blit(BG, (0, 0))
     pygame.display.set_caption("Matrice de Ronds")
     game(SCREEN)

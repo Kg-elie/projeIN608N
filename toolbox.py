@@ -443,7 +443,7 @@ def distance(point1, point2):
 
 
 def get_font(size):
-    return pygame.font.Font("font.ttf", size)
+    return pygame.font.Font("font.ttf", int(size))
 
 def simulate_click(position):
     pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': position, 'button': 1}))
