@@ -314,7 +314,7 @@ def verification_sumito(plateau,billes_select, direction):
 def deplacement(plateau, billes_select, bille, cercles):
     """
     Fonction qui permet de receuillirtoutes les inormations pour le deplacement 
-    d'une bille sur le plateau de jeu Utilisation de récursivité ? 
+    d'une bille sur le plateau de jeu
     """
     
     """coordonnes de la bille selectionner pour le deplacement"""
@@ -335,7 +335,8 @@ def deplacement(plateau, billes_select, bille, cercles):
         mouvement += "+"
     else:
         mouvement += "-"
-        """verification de la validite du mouvement"""
+    
+    """verification de la validite du mouvement"""
     verif = True
     for bille in billes_select:
         verif*=verification_mouvement(plateau,bille,trouver_direction(mouvement),billes_select)
@@ -348,26 +349,26 @@ def deplacement(plateau, billes_select, bille, cercles):
             print(f" sumito possible en poussant {verif_sumito[1]}")
             billes_select.extend(verif_sumito[1]) #ajoute les billes adverses a deplacer
             
-        donnee_deplacement = [] ; #stocke les nouvelles position position des billes a deplacer
+        donnee_deplacement = [] #stocke les nouvelles position position des billes a deplacer
         for bille_select in billes_select:
             actual= plateau.get_bille(bille_select)
-            x, y = actual.get_x(), actual.get_y(); #coordonnes de la bille selectionner pour le deplacement
+            x, y = actual.get_x(), actual.get_y() #coordonnes de la bille selectionner pour le deplacement
             if  (x, y, plateau.RAYON + 2)  in cercles:
                 cercles.remove((x, y, plateau.RAYON + 2))
                 pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5); #dessine un cercle vide pour effacer le cercle de selection
              
             try :
-                new_pos = trouver_position(bille_select,trouver_direction(mouvement));#trouve la nouvelle position de la bille en fonction de la direction
-                new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y();#coordonnes de la nouvelle position de la bille
-                donnee_deplacement.append((new_pos,new_x,new_y,actual.get_id(),actual.get_couleur()));#ajoute les nouvelles position  de la bille  
+                new_pos = trouver_position(bille_select,trouver_direction(mouvement)) #trouve la nouvelle position de la bille en fonction de la direction
+                new_x, new_y = plateau.get_bille(new_pos).get_x(), plateau.get_bille(new_pos).get_y() #coordonnes de la nouvelle position de la bille
+                donnee_deplacement.append((new_pos,new_x,new_y,actual.get_id(),actual.get_couleur())) #ajoute les nouvelles position  de la bille  
             except:
                 continue
-            effacer_bille(plateau, bille_select, x, y ,plateau.get_bille(new_pos).get_id()); #efface la bille
+            effacer_bille(plateau, bille_select, x, y ,plateau.get_bille(new_pos).get_id()) #efface la bille
         for donnee in donnee_deplacement:
-            deplacer_bille(plateau,donnee[0],donnee[1],donnee[2],donnee[3],donnee[4]); #deplace les billes
+            deplacer_bille(plateau,donnee[0],donnee[1],donnee[2],donnee[3],donnee[4]) #deplace les billes
         return True
     else: 
-        print("mouvement impossible");#affiche un message d'erreur si le mouvement est impossible
+        print("mouvement impossible") #affiche un message d'erreur si le mouvement est impossible
         for _ in range(len(cercles)):
             #nettoie le plateau de jeu
             x,y,r = cercles[-1]
@@ -380,9 +381,9 @@ def effacer_bille(plateau, bille,x,y,t_cpt):
     Fonction qui permet d'effacer une bille sur le plateau de jeu. on renplace la bille par une case vide
     """
     plateau.plateau[bille] = Bille(plateau.SCREEN, (101, 67, 32), x, y, t_cpt, plateau.RAYON)
-
-
     pass
+
+
 def deplacer_bille(plateau, target,new_x,new_y, cpt, color):
     """
     Fonction qui permet de deplacer une bille sur le plateau de jeu. on remplace la bille par une autre bille a une nouvelle position
@@ -404,7 +405,7 @@ def alignement(billes_select, bille):
         """ ex : A1 B2 """
         return "diagonale"
     else: 
-        return ""; #si billes non alignees
+        return "" #si billes non alignees
     
 
 
@@ -485,13 +486,13 @@ def coequipier_voisins(plateau, bille,direction):
     """
     Fonction qui permet de trouver les voisins alliés d'une bille
     """
-    lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
-    boussole = {"NE":(1,0),"NW":(1,1),"SE":(-1,-1),"SW":(-1,0),"E":(0,-1),"W":(0,1)}; #dictionnaire qui permet de trouver l'allié
+    lettre,num = ord(bille[0]),int(bille[1]) #separes les coordonnes de la bille
+    boussole = {"NE":(1,0),"NW":(1,1),"SE":(-1,-1),"SW":(-1,0),"E":(0,-1),"W":(0,1)} #dictionnaire qui permet de trouver l'allié
     voisins = []
     sens = boussole[direction]
     for _ in range(2):
         try:
-            key = chr(lettre+sens[0])+str(num+sens[1]); #trouve la nouvelle position de la bille
+            key = chr(lettre+sens[0])+str(num+sens[1]) #trouve la nouvelle position de la bille
             if plateau.get_bille(key).get_couleur() == (255, 0, 0):
                 lettre,num = ord(key[0]),int(key[1])
                 
@@ -504,13 +505,13 @@ def voisins_jouables(plateau, bille):
     """
     Fonction qui permet de trouver les voisins libres d'une bille
     """
-    lettre,num = ord(bille[0]),int(bille[1]); #separes les coordonnes de la bille
-    boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)}; #dictionnaire qui permet de trouver la nouvelle position de la bille
+    lettre,num = ord(bille[0]),int(bille[1]) #separes les coordonnes de la bille
+    boussole = {"NE":(-1,0),"NW":(-1,-1),"SE":(1,1),"SW":(1,0),"E":(0,1),"W":(0,-1)} #dictionnaire qui permet de trouver la nouvelle position de la bille
     voisins = []
     allie = []
     for direction in boussole.keys():
         try:
-            key = chr(lettre+boussole[direction][0])+str(num+boussole[direction][1]); #trouve la nouvelle position de la bille
+            key = chr(lettre+boussole[direction][0])+str(num+boussole[direction][1]) #trouve la nouvelle position de la bille
             alliance = []
             alliance.extend(coequipier_voisins(plateau, bille,direction))
             aligne = bille

@@ -5,6 +5,7 @@ import shared_data as sd
 import menu
 
 
+
 cercles = []
 turn = 0
 player = [sd.BLUE, sd.RED]
@@ -17,7 +18,7 @@ def game(SCREEN):
     billes_select = []
     alignement = ""
     running = True
-    SCREEN.fill(sd.WHITE)
+    SCREEN.fill("#171614")
     toolbox.draw_regular_polygon(SCREEN, sd.BROWN, 6, sd.WINDOW_SIZE[1]//2 + 50,
                                 (sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), 0)
 
@@ -64,7 +65,6 @@ def game(SCREEN):
                     cercles.clear()
                     turn = 0
                     menu.main_menu(SCREEN, sd.back_image)
-                    
                 for place, bille in plateau.get_plateau().items():
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= sd.RAYON and len(billes_select) <= 3:
                         """ gestion du deplacement des billes selectionnées """

@@ -18,7 +18,7 @@ def game_IA(SCREEN):
     billes_select = []
     alignement = ""
     running = True
-    SCREEN.fill(sd.WHITE)
+    SCREEN.fill("#171614")
     toolbox.draw_regular_polygon(SCREEN, sd.BROWN, 6, sd.WINDOW_SIZE[1]//2 + 50,
                                 (sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), 0)
 
