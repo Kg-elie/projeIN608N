@@ -11,3 +11,6 @@ VIDE = (101, 67, 32)
 BROWN = (139, 69, 19)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+
+
+print(WINDOW_SIZE)

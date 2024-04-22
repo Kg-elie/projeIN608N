@@ -5,11 +5,16 @@ import abalone_IA
 import toolbox
 import shared_data as sd
 
+resolution = [(640, 360), (1280, 720), (1600, 900), (1920, 1080)]
+
 button_image = pygame.image.load("rouecrantee.png")
 button_image = pygame.transform.scale(button_image, (150, 150))
 
 arrow_image = pygame.image.load("arrow_back.png")
 arrow_image = pygame.transform.scale(arrow_image, (100, 100))
+
+res_button = []
+
 
 # Permet de changer la couleur de l'image
 for image in [button_image, arrow_image]:
@@ -76,12 +81,22 @@ def option(SCREEN, BG):
             center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
         SCREEN.blit(OPTION_TEXT, OPTION_RECT)
 
+        x1080 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), text_input="1920x1080", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
+        x900 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.8), text_input="1600x900", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
+        x720 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.6), text_input="1280x720", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
+        x360 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.4), text_input="640x360", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
+
         OPTION_BACK = toolbox.Button(image=arrow_image, pos=(
             sd.WINDOW_SIZE[0]//1.08, sd.WINDOW_SIZE[1]//1.16), text_input="", font=toolbox.get_font(
             sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
-        OPTION_BACK.changeColor(OPTION_MOUSE_POS)
-        OPTION_BACK.update(SCREEN)
+        for Button in [x1080, x900, x720, x360, OPTION_BACK]:
+            Button.changeColor(OPTION_MOUSE_POS)
+            Button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -90,6 +105,16 @@ def option(SCREEN, BG):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTION_BACK.checkForInput(OPTION_MOUSE_POS):
                     main_menu(SCREEN, BG)
+                for i, button in enumerate([x360, x720, x900, x1080]):
+                    if button.checkForInput(OPTION_MOUSE_POS):
+                        with open("shared_data.py", "r") as f:
+                            f_data = f.read()
+                        print("lu")
+                        f_data = f_data.replace(
+                            "WINDOW_SIZE = " + str(sd.WINDOW_SIZE), "WINDOW_SIZE = " + str(resolution[i]))
+                        with open("shared_data.py", "w") as f:
+                            f.write(f_data)
+                        print("ecrit")
 
         pygame.display.update()
 
