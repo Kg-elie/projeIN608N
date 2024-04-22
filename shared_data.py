@@ -1,3 +1,5 @@
+import pygame
+
 WINDOW_SIZE = (1600, 900)
 CELL_SIZE = WINDOW_SIZE[1]//9.6
 GRID_LENGTH = 9
@@ -12,5 +14,5 @@ BROWN = (139, 69, 19)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-
-print(WINDOW_SIZE)
+back_image = pygame.image.load("bg.png")
+back_image = pygame.transform.scale(back_image, WINDOW_SIZE)

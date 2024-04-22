@@ -2,13 +2,12 @@ import pygame
 import sys
 import toolbox
 import shared_data as sd
+import menu
 
 
 cercles = []
-
 turn = 0
 player = [sd.BLUE, sd.RED]
-
 
 def game(SCREEN):
     """
@@ -20,11 +19,22 @@ def game(SCREEN):
     running = True
     SCREEN.fill(sd.WHITE)
     toolbox.draw_regular_polygon(SCREEN, sd.BROWN, 6, sd.WINDOW_SIZE[1]//2 + 50,
-                                 (sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), 0)
+                                (sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), 0)
 
     plateau = toolbox.Plateau(
         SCREEN, sd.WINDOW_SIZE, sd.CELL_SIZE, sd.GRID_LENGTH, sd.RAYON)
+    
+    
     while running:
+
+        GAME_POS = pygame.mouse.get_pos()
+
+        MENU_BACK = toolbox.Button(image=None, pos=(
+            sd.WINDOW_SIZE[0]//1.10, sd.WINDOW_SIZE[1]//1.10), text_input="Menu", font=toolbox.get_font(
+            sd.FONT_SIZE*1.7), base_color="Grey", hovering_color="Grey")
+    
+        MENU_BACK.changeColor(GAME_POS)
+        MENU_BACK.update(SCREEN)
 
         if gagnant := plateau.verif_victoire():
             running = False
@@ -43,13 +53,18 @@ def game(SCREEN):
             player_rect = player_turn.get_rect(center=(200, 100))
             SCREEN.blit(player_turn, player_rect)
 
-        GAME_POS = pygame.mouse.get_pos()
+        
 
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 running = False
-
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if MENU_BACK.checkForInput(GAME_POS):
+                    cercles.clear()
+                    turn = 0
+                    menu.main_menu(SCREEN, sd.back_image)
+                    
                 for place, bille in plateau.get_plateau().items():
                     if toolbox.distance(GAME_POS, (bille.get_x(), bille.get_y())) <= sd.RAYON and len(billes_select) <= 3:
                         """ gestion du deplacement des billes selectionnées """

@@ -112,7 +112,7 @@ def option(SCREEN, BG):
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
         x720 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.75), text_input="1280x720", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
-        x360 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.50), text_input="640x360", font=toolbox.get_font(
+        x360 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.53), text_input="640x360", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
 
         OPTION_BACK = toolbox.Button(image=arrow_image, pos=(
