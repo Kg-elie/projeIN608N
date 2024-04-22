@@ -8,12 +8,12 @@ import shared_data as sd
 resolution = [(640, 360), (1280, 720), (1600, 900), (1920, 1080)]
 
 button_image = pygame.image.load("rouecrantee.png")
-button_image = pygame.transform.scale(button_image, (150, 150))
+button_image = pygame.transform.scale(
+    button_image, (sd.WINDOW_SIZE[1]//4.8, sd.WINDOW_SIZE[1]//4.8))
 
 arrow_image = pygame.image.load("arrow_back.png")
-arrow_image = pygame.transform.scale(arrow_image, (100, 100))
-
-res_button = []
+arrow_image = pygame.transform.scale(
+    arrow_image, (sd.WINDOW_SIZE[1]//7.2, sd.WINDOW_SIZE[1]//7.2))
 
 
 # Permet de changer la couleur de l'image
@@ -70,24 +70,49 @@ def main_menu(SCREEN, BG):
 def option(SCREEN, BG):
     pygame.display.set_caption('Option')
 
-    while True:
+    running = True
+
+    while running:
         OPTION_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(BG, (0, 0))
 
         OPTION_TEXT = toolbox.get_font(sd.FONT_SIZE).render(
-            "Option", True, "White")
+            "Click on an option to choose it:", True, "White")
         OPTION_RECT = OPTION_TEXT.get_rect(
-            center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
+            center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//5))
         SCREEN.blit(OPTION_TEXT, OPTION_RECT)
 
-        x1080 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2), text_input="1920x1080", font=toolbox.get_font(
+        RESTART_TEXT1 = toolbox.get_font(sd.FONT_SIZE//1.8).render(
+            "You will need to", True, "White")
+        RESTART_TEXT2 = toolbox.get_font(sd.FONT_SIZE//1.8).render(
+            "restart the game", True, "White")
+        RESTART_TEXT3 = toolbox.get_font(sd.FONT_SIZE//1.8).render(
+            "after selecting a", True, "White")
+        RESTART_TEXT4 = toolbox.get_font(sd.FONT_SIZE//1.8).render(
+            "new resolution", True, "White")
+
+        RESTART_RECT1 = RESTART_TEXT1.get_rect(
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//3.2))
+        RESTART_RECT2 = RESTART_TEXT2.get_rect(
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//2.6))
+        RESTART_RECT3 = RESTART_TEXT3.get_rect(
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//2.2))
+        RESTART_RECT4 = RESTART_TEXT4.get_rect(
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//1.9))
+
+        SCREEN.blit(RESTART_TEXT1, RESTART_RECT1)
+        SCREEN.blit(RESTART_TEXT2, RESTART_RECT2)
+        SCREEN.blit(RESTART_TEXT3, RESTART_RECT3)
+        SCREEN.blit(RESTART_TEXT4, RESTART_RECT4)
+
+        x1080 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.5), text_input="1920x1080", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
-        x900 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.8), text_input="1600x900", font=toolbox.get_font(
+        x900 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.05), text_input="1600x900", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
-        x720 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.6), text_input="1280x720", font=toolbox.get_font(
+        x720 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.75), text_input="1280x720", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
-        x360 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.4), text_input="640x360", font=toolbox.get_font(
+        x360 = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.50), text_input="640x360", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
 
         OPTION_BACK = toolbox.Button(image=arrow_image, pos=(
@@ -109,12 +134,14 @@ def option(SCREEN, BG):
                     if button.checkForInput(OPTION_MOUSE_POS):
                         with open("shared_data.py", "r") as f:
                             f_data = f.read()
-                        print("lu")
+                            print("lu")
                         f_data = f_data.replace(
                             "WINDOW_SIZE = " + str(sd.WINDOW_SIZE), "WINDOW_SIZE = " + str(resolution[i]))
                         with open("shared_data.py", "w") as f:
                             f.write(f_data)
-                        print("ecrit")
+                            print("ecrit")
+                        pygame.quit()
+                        sys.exit()
 
         pygame.display.update()
 
@@ -166,5 +193,6 @@ if __name__ == "__main__":
     pygame.init()
     SCREEN = pygame.display.set_mode(sd.WINDOW_SIZE)
     BG = pygame.image.load('bg.png')
+    BG = pygame.transform.scale(BG, sd.WINDOW_SIZE)
     pygame.display.set_caption('Game')
     main_menu(SCREEN, BG)

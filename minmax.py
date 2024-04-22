@@ -1,6 +1,4 @@
 
-import pygame
-import sys
 import toolbox
 import shared_data as sd
 
