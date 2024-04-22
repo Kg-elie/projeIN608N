@@ -8,10 +8,14 @@ import shared_data as sd
 button_image = pygame.image.load("rouecrantee.png")
 button_image = pygame.transform.scale(button_image, (150, 150))
 
-# Permet de chnager la couleur de l'image
-var = pygame.PixelArray(button_image)
-var.replace((0, 0, 0), (255, 255, 255))
-del var
+arrow_image = pygame.image.load("arrow_back.png")
+arrow_image = pygame.transform.scale(arrow_image, (100, 100))
+
+# Permet de changer la couleur de l'image
+for image in [button_image, arrow_image]:
+    var = pygame.PixelArray(image)
+    var.replace((0, 0, 0), (255, 255, 255))
+    del var
 
 
 def main_menu(SCREEN, BG):
@@ -72,8 +76,9 @@ def option(SCREEN, BG):
             center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
         SCREEN.blit(OPTION_TEXT, OPTION_RECT)
 
-        OPTION_BACK = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.5), text_input="BACK", font=toolbox.get_font(
-            sd.FONT_SIZE), base_color="White", hovering_color="Green")
+        OPTION_BACK = toolbox.Button(image=arrow_image, pos=(
+            sd.WINDOW_SIZE[0]//1.08, sd.WINDOW_SIZE[1]//1.16), text_input="", font=toolbox.get_font(
+            sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
         OPTION_BACK.changeColor(OPTION_MOUSE_POS)
         OPTION_BACK.update(SCREEN)
@@ -109,17 +114,13 @@ def play(SCREEN, BG):
         AI_GAME_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//1.5, sd.WINDOW_SIZE[1]//2), text_input="1 vs AI", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
 
-        PLAY_BACK = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.5), text_input="BACK", font=toolbox.get_font(
-            sd.FONT_SIZE), base_color="White", hovering_color="Green")
+        PLAY_BACK = toolbox.Button(image=arrow_image, pos=(
+            sd.WINDOW_SIZE[0]//1.08, sd.WINDOW_SIZE[1]//1.16), text_input="", font=toolbox.get_font(
+            sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
-        GAME_BUTTON.changeColor(PLAY_MOUSE_POS)
-        GAME_BUTTON.update(SCREEN)
-
-        AI_GAME_BUTTON.changeColor(PLAY_MOUSE_POS)
-        AI_GAME_BUTTON.update(SCREEN)
-
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        for Button in [GAME_BUTTON, AI_GAME_BUTTON, PLAY_BACK]:
+            Button.changeColor(PLAY_MOUSE_POS)
+            Button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
