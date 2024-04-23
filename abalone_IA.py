@@ -15,6 +15,8 @@ def game_IA(SCREEN):
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
     """
     global turn
+    pointsBlue = 0
+    pointsRed = 0
     billes_select = []
     alignement = ""
     running = True
@@ -36,11 +38,18 @@ def game_IA(SCREEN):
     
         MENU_BACK.changeColor(GAME_POS)
         MENU_BACK.update(SCREEN)
+
+        points_f = toolbox.get_font(45).render(
+                f"{pointsBlue} : {pointsRed}", True, "BLACK")
+        pygame.draw.rect(SCREEN, sd.BLUE, (sd.WINDOW_SIZE[0]//1.22, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//13, sd.WINDOW_SIZE[1]//7.2))
+        points_rect = points_f.get_rect(center=(1100, 100))
+        SCREEN.blit(points_f, points_rect)
         
         if gagnant := plateau.verif_victoire():
             running = False
             print(f"victoire de {gagnant} ")
             continue
+        
         if turn == 0:
             player_turn = toolbox.get_font(45).render(
                 "blue's turn", True, "BLACK")

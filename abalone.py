@@ -15,6 +15,8 @@ def game(SCREEN):
     Fonction qui permet de lancer le jeu, elle permet de creer le plateau de jeu et de l'afficher 
     """
     global turn
+    pointsBlue = 0
+    pointsRed = 0
     billes_select = []
     alignement = ""
     running = True
@@ -37,21 +39,28 @@ def game(SCREEN):
         MENU_BACK.changeColor(GAME_POS)
         MENU_BACK.update(SCREEN)
 
+        points_f = toolbox.get_font(45).render(
+                f"{pointsBlue} : {pointsRed}", True, "BLACK")
+        pygame.draw.rect(SCREEN, sd.BLUE, (sd.WINDOW_SIZE[0]//1.22, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//13, sd.WINDOW_SIZE[1]//7.2))
+        points_rect = points_f.get_rect(center=(1100, 100))
+        SCREEN.blit(points_f, points_rect)
+
         if gagnant := plateau.verif_victoire():
             running = False
             print(f"victoire de {gagnant} ")
             continue
+
         if turn == 0:
             player_turn = toolbox.get_font(45).render(
                 "blue's turn", True, "BLACK")
-            pygame.draw.rect(SCREEN, sd.BLUE, (50, 50, 300, 100))
-            player_rect = player_turn.get_rect(center=(200, 100))
+            pygame.draw.rect(SCREEN, sd.BLUE, (sd.WINDOW_SIZE[0]//25.6, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//4.27, sd.WINDOW_SIZE[1]//7.2))
+            player_rect = player_turn.get_rect(center=(sd.WINDOW_SIZE[0]//6.4, sd.WINDOW_SIZE[1]//7.2))
             SCREEN.blit(player_turn, player_rect)
         else:
             player_turn = toolbox.get_font(45).render(
                 "red's turn", True, "BLACK")
-            pygame.draw.rect(SCREEN, sd.RED, (50, 50, 300, 100))
-            player_rect = player_turn.get_rect(center=(200, 100))
+            pygame.draw.rect(SCREEN, sd.RED, (sd.WINDOW_SIZE[0]//25.6, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//4.27, sd.WINDOW_SIZE[1]//7.2))
+            player_rect = player_turn.get_rect(center=(sd.WINDOW_SIZE[0]//6.4, sd.WINDOW_SIZE[1]//7.2))
             SCREEN.blit(player_turn, player_rect)
 
         
@@ -78,6 +87,7 @@ def game(SCREEN):
                                 break
                             elif len(billes_select) == 0:
                                 break
+                            
                         elif bille.get_couleur() != player[turn] and len(billes_select) > 0:
                             print("bille adverse")
                             if toolbox.deplacement(

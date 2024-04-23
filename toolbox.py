@@ -355,7 +355,7 @@ def deplacement(plateau, billes_select, bille, cercles):
             x, y = actual.get_x(), actual.get_y() #coordonnes de la bille selectionner pour le deplacement
             if  (x, y, plateau.RAYON + 2)  in cercles:
                 cercles.remove((x, y, plateau.RAYON + 2))
-                pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5); #dessine un cercle vide pour effacer le cercle de selection
+                pygame.draw.circle(plateau.SCREEN, (139, 69, 19), (x, y), plateau.RAYON + 2,5) #dessine un cercle vide pour effacer le cercle de selection
              
             try :
                 new_pos = trouver_position(bille_select,trouver_direction(mouvement)) #trouve la nouvelle position de la bille en fonction de la direction
