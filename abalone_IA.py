@@ -68,6 +68,7 @@ def game_IA(SCREEN):
             billes_jouables = toolbox.billes_jouables_IA(plateau,player[turn])
             noeud = minmax.Node(plateau, depth= 2, color= player[turn]) 
             meilleur_mouvement = noeud.minmax(noeud.depth, True)
+            print(meilleur_mouvement)
             place_IA = meilleur_mouvement[1]
             billes_IA = [plateau.get_bille(i) for i in place_IA]
             billes_select =place_IA
@@ -78,7 +79,6 @@ def game_IA(SCREEN):
                 toolbox.simulate_click((bille_IA.get_x(), bille_IA.get_y()))
                 cercles.append((bille_IA.get_x(), bille_IA.get_y(), sd.RAYON + 2))
 
-            sleep(1)
             
 
         for event in pygame.event.get():

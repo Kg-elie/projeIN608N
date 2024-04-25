@@ -68,7 +68,7 @@ class Node:
         
 
 
-    def minmax(self, depth, max_player):
+    def minmax(self, depth, max_player, alpha = -1000, beta = 1000):
         if depth == 0:
             return self.score,self.move, self.new_pose
             
@@ -78,23 +78,27 @@ class Node:
             value = -1000
             for child in self.children:
                 
-                eval = child.minmax( depth - 1, False)
-                if depth == 2:  
-                    print(eval)
+                eval = child.minmax( depth - 1, False, alpha, beta)
+                if eval[0] > beta:
+                    return eval
                 if value < eval[0]:   
                     value = eval[0]
                     move = child.move
                     pos = child.new_pose
-    
+                    alpha =  value
+
         else: 
             value = 1000
             for child in self.children:
                 
                 eval = child.minmax( depth - 1, True)
+                if eval[0] < alpha:
+                    return eval
                 if eval[0] < value:
                     value = eval[0] 
                     move = child.move
                     pos = child.new_pose
+                    beta = value
 
         self.score = value
         if self.depth > 0:
