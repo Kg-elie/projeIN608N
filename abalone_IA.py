@@ -67,7 +67,7 @@ def game_IA(SCREEN):
             print(f"tour de l'IA pour le joueur {player[turn]}")
             billes_jouables = toolbox.billes_jouables_IA(plateau,player[turn])
             noeud = minmax.Node(plateau, depth= 2, color= player[turn]) 
-            meilleur_mouvement = noeud.minmax(noeud.depth, True)
+            meilleur_mouvement = noeud.minimax(noeud.depth, True)
             print(meilleur_mouvement)
             place_IA = meilleur_mouvement[1]
             billes_IA = [plateau.get_bille(i) for i in place_IA]

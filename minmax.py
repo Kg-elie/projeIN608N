@@ -20,9 +20,6 @@ class Node:
         self.color = color
         self.enemi = sd.RED if self.color == sd.BLUE else sd.BLUE
         self.generate_children()
-        
-
-                
 
     def add_child(self, child):
         child.parent = self
@@ -41,6 +38,8 @@ class Node:
         return self.resultat
     
     def generate_children(self):
+        """ fonction qui genere les enfants d'un noeud"""
+
         if self.depth %2 == 0:
             color = self.color
         else:
@@ -50,11 +49,7 @@ class Node:
             self.score = eval_score(self.plateau, self.color)
             return 
         
-
-        
         for bille in mouvement:
-            
-
             possibilite, alliance = toolbox.voisins_jouables(self.plateau, bille[0],color)
 
             for pos, allie in zip(possibilite, alliance):
@@ -66,9 +61,8 @@ class Node:
                 self.add_child(child)
                 
         
-
-
-    def minmax(self, depth, max_player, alpha = -1000, beta = 1000):
+    def minimax(self, depth, max_player, alpha = -1000, beta = 1000):
+        """" fonction de recherche minimax"""
         if depth == 0:
             return self.score,self.move, self.new_pose
             
@@ -78,7 +72,7 @@ class Node:
             value = -1000
             for child in self.children:
                 
-                eval = child.minmax( depth - 1, False, alpha, beta)
+                eval = child.minimax( depth - 1, False, alpha, beta)
                 if eval[0] > beta:
                     return eval
                 if value < eval[0]:   
@@ -91,7 +85,7 @@ class Node:
             value = 1000
             for child in self.children:
                 
-                eval = child.minmax( depth - 1, True)
+                eval = child.minimax( depth - 1, True)
                 if eval[0] < alpha:
                     return eval
                 if eval[0] < value:
@@ -106,7 +100,6 @@ class Node:
         return value, move,pos
         
         
-
 
 def distance_center(plateau, color):
     distance = 0
@@ -148,6 +141,7 @@ def bille_elimine(plateau, color):
 
 
 def eval_score(plateau,color):
+    """ fonction qui retourne le score d'un plateau pour un joueur donné"""
     player = color
     enemy = sd.RED if player == sd.BLUE else sd.BLUE
 
@@ -166,11 +160,11 @@ def eval_score(plateau,color):
         densite_ennemi + COEF_ELIMINATION * elimination_ennemi
 
     score =score_ennemi - score_allie
-
     return round(score, 2)
 
 
 def preview(plateau, billes, direction,color):
+    """ fonction qui simule un deplacement de billes"""
     plateau = plateau.copy()
     new_pos = []
     ancienne_pos = []
@@ -202,18 +196,3 @@ def preview(plateau, billes, direction,color):
     
 
 
-def choix_billes(plateau, billes_jouables,color):
-    meilleur = None
-    for bille in billes_jouables:
-        bille = [bille[0]]
-
-        possibilite, alliance = toolbox.voisins_jouables(plateau, bille[0], color)
-
-        for pos, allie in zip(possibilite, alliance):
-            bille = [bille[0]]
-            bille.extend(allie)
-            direction = toolbox.direction_IA(plateau, bille[0], pos)
-            score = preview(plateau, bille, direction, color)
-            if meilleur == None or score[0] > meilleur[0][0]:
-                meilleur = (score, bille, pos)
-    return meilleur
