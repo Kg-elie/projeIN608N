@@ -4,16 +4,25 @@ import shared_data as sd
 
 COEF_CENTRE = 1.5
 COEF_DENSITE = 1
-COEF_ELIMINATION = 2.5
+COEF_ELIMINATION = 4
 
 
-class node:
-    def __init__(self, children=[], parent=None, depth=0, score=0, move=None):
+
+class Node:
+    def __init__(self,  plateau: toolbox.Plateau, parent=None, depth=0, score=0, move = None, new_pose = None, color = 0):
+        self.plateau = plateau
         self.move = move
+        self.new_pose = new_pose
         self.parent = parent
         self.children = []
-        self.score = 0
+        self.score = score
         self.depth = depth
+        self.color = color
+        self.enemi = sd.RED if self.color == sd.BLUE else sd.BLUE
+        self.generate_children()
+        
+
+                
 
     def add_child(self, child):
         child.parent = self
@@ -23,11 +32,76 @@ class node:
         return self.children
 
     def __str__(self):
-        return str(self.data)
+        return f" mouvement : {str(self.move)} vers {self.new_pose} avec score : {self.score }"
+    
+    def __repr__(self):
+        return f" mouvement : {str(self.move)} vers {self.new_pose} avec score : {self.score }  "
+    
+    def get_mouvement(self):
+        return self.resultat
+    
+    def generate_children(self):
+        if self.depth %2 == 0:
+            color = self.color
+        else:
+            color = self.enemi
+        mouvement = toolbox.billes_jouables_IA(self.plateau, color)
+        if self.depth == 0:
+            self.score = eval_score(self.plateau, self.color)
+            return 
+        
+
+        
+        for bille in mouvement:
+            
+
+            possibilite, alliance = toolbox.voisins_jouables(self.plateau, bille[0],color)
+
+            for pos, allie in zip(possibilite, alliance):
+                bille = [bille[0]]
+                bille.extend(allie)
+                direction = toolbox.direction_IA(self.plateau, bille[0], pos)
+                score = preview(self.plateau, bille, direction, color)
+                child = Node(score[1], depth = self.depth - 1, move = bille, parent = self, new_pose = pos, color = color)
+                self.add_child(child)
+                
+        
 
 
-def eval(plateau):
-    pass
+    def minmax(self, depth, max_player):
+        if depth == 0:
+            return self.score,self.move, self.new_pose
+            
+        move = None
+        pos = None
+        if   max_player:
+            value = -1000
+            for child in self.children:
+                
+                eval = child.minmax( depth - 1, False)
+                if depth == 2:  
+                    print(eval)
+                if value < eval[0]:   
+                    value = eval[0]
+                    move = child.move
+                    pos = child.new_pose
+    
+        else: 
+            value = 1000
+            for child in self.children:
+                
+                eval = child.minmax( depth - 1, True)
+                if eval[0] < value:
+                    value = eval[0] 
+                    move = child.move
+                    pos = child.new_pose
+
+        self.score = value
+        if self.depth > 0:
+            print(f" le meilleur score possible avec une recherche de profondeur {self.depth} est : {value} avec le pions  {move} vers {pos} pour le joueur {self.color}")
+        return value, move,pos
+        
+        
 
 
 def distance_center(plateau, color):
@@ -69,26 +143,30 @@ def bille_elimine(plateau, color):
     return 14 - cpt
 
 
-def eval_score(plateau):
-    densite_allie = distance_allie(plateau, sd.RED)
-    center_allie = distance_center(plateau, sd.RED)
-    elimination_allie = bille_elimine(plateau, sd.RED)
+def eval_score(plateau,color):
+    player = color
+    enemy = sd.RED if player == sd.BLUE else sd.BLUE
 
-    densite_ennemi = distance_allie(plateau, sd.BLUE)
-    center_ennemi = distance_center(plateau, sd.BLUE)
-    elimination_ennemi = bille_elimine(plateau, sd.BLUE)
+
+    densite_allie = distance_allie(plateau,player )
+    center_allie = distance_center(plateau,player )
+    elimination_allie = bille_elimine(plateau,player )
+
+    densite_ennemi = distance_allie(plateau, enemy)
+    center_ennemi = distance_center(plateau,enemy)
+    elimination_ennemi = bille_elimine(plateau,enemy )
 
     score_allie = COEF_CENTRE * center_allie + COEF_DENSITE * \
         densite_allie + COEF_ELIMINATION * elimination_allie
     score_ennemi = COEF_CENTRE * center_ennemi + COEF_DENSITE * \
         densite_ennemi + COEF_ELIMINATION * elimination_ennemi
 
-    score = score_allie - score_ennemi
+    score =score_ennemi - score_allie
 
     return round(score, 2)
 
 
-def preview(plateau, billes, direction):
+def preview(plateau, billes, direction,color):
     plateau = plateau.copy()
     new_pos = []
     ancienne_pos = []
@@ -113,25 +191,25 @@ def preview(plateau, billes, direction):
                 plateau.get_plateau()[pos] = plateau.get_bille(bille_vide)
 
         except:
-            return -1000
+            return -1000,plateau
 
-    return eval_score(plateau)
+    return eval_score(plateau, color),plateau
 
-    pass
+    
 
 
-def choix_billes(plateau, billes_jouables):
+def choix_billes(plateau, billes_jouables,color):
     meilleur = None
     for bille in billes_jouables:
         bille = [bille[0]]
 
-        possibilite, alliance = toolbox.voisins_jouables(plateau, bille[0])
+        possibilite, alliance = toolbox.voisins_jouables(plateau, bille[0], color)
 
         for pos, allie in zip(possibilite, alliance):
             bille = [bille[0]]
             bille.extend(allie)
             direction = toolbox.direction_IA(plateau, bille[0], pos)
-            score = preview(plateau, bille, direction)
-            if meilleur == None or score > meilleur[0]:
+            score = preview(plateau, bille, direction, color)
+            if meilleur == None or score[0] > meilleur[0][0]:
                 meilleur = (score, bille, pos)
     return meilleur

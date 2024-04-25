@@ -63,10 +63,11 @@ def game_IA(SCREEN):
             player_rect = player_turn.get_rect(center=(200, 100))
             SCREEN.blit(player_turn, player_rect)
 
-        if turn == 1 and len(billes_select) == 0:
-            print("tour de l'IA")
-            billes_jouables = toolbox.billes_jouables_IA(plateau)
-            meilleur_mouvement = minmax.choix_billes(plateau,billes_jouables)
+        if turn == 1   and  len(billes_select) == 0:
+            print(f"tour de l'IA pour le joueur {player[turn]}")
+            billes_jouables = toolbox.billes_jouables_IA(plateau,player[turn])
+            noeud = minmax.Node(plateau, depth= 2, color= player[turn]) 
+            meilleur_mouvement = noeud.minmax(noeud.depth, True)
             place_IA = meilleur_mouvement[1]
             billes_IA = [plateau.get_bille(i) for i in place_IA]
             billes_select =place_IA
@@ -89,7 +90,7 @@ def game_IA(SCREEN):
                     cercles.clear()
                     turn = 0
                     menu.main_menu(SCREEN, sd.back_image)
-                if turn == 1 and len(billes_select) > 0:
+                if turn == 1 and  len(billes_select) > 0:
                     move = meilleur_mouvement[2]
                     bille = plateau.get_bille(move)
                     direction = toolbox.direction_IA(plateau,billes_select[0],move)
@@ -181,8 +182,8 @@ def game_IA(SCREEN):
                                     (bille.get_x(), bille.get_y(), sd.RAYON + 2))
 
                             
-                print(f" liste des billes selectionner{billes_select}")
-                print(f" le score du plateau pour l'ia est de {minmax.eval_score(plateau)}")
+                # print(f" liste des billes selectionner{billes_select}")
+                # print(f" le score du plateau pour l'ia est de {minmax.eval_score(plateau)}")
                                     
             
 

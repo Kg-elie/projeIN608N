@@ -450,14 +450,14 @@ def simulate_click(position):
     pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': position, 'button': 1}))
 
 
-def billes_jouables_IA(plateau):
+def billes_jouables_IA(plateau,color):
     """
     Fonction qui retourne les billes jouables par l'IA
     """
     billes = []
     for pos, bille in plateau.get_plateau().items():
-        if bille.get_couleur() == (255, 0, 0):
-            if move := voisins_jouables(plateau, pos):
+        if bille.get_couleur() == color:
+            if move := voisins_jouables(plateau, pos,color):
                 billes.append((pos, bille))
     return billes
 
@@ -482,7 +482,7 @@ def direction_IA(plateau, bille, destination):
         mouvement += "-"
     return trouver_direction(mouvement)
 
-def coequipier_voisins(plateau, bille,direction):
+def coequipier_voisins(plateau, bille,direction,color):
     """
     Fonction qui permet de trouver les voisins alliés d'une bille
     """
@@ -493,7 +493,7 @@ def coequipier_voisins(plateau, bille,direction):
     for _ in range(2):
         try:
             key = chr(lettre+sens[0])+str(num+sens[1]) #trouve la nouvelle position de la bille
-            if plateau.get_bille(key).get_couleur() == (255, 0, 0):
+            if plateau.get_bille(key).get_couleur() == color:
                 lettre,num = ord(key[0]),int(key[1])
                 
                 voisins.append(key)
@@ -501,7 +501,7 @@ def coequipier_voisins(plateau, bille,direction):
             continue
     return voisins
 
-def voisins_jouables(plateau, bille):
+def voisins_jouables(plateau, bille, color):
     """
     Fonction qui permet de trouver les voisins libres d'une bille
     """
@@ -513,7 +513,7 @@ def voisins_jouables(plateau, bille):
         try:
             key = chr(lettre+boussole[direction][0])+str(num+boussole[direction][1]) #trouve la nouvelle position de la bille
             alliance = []
-            alliance.extend(coequipier_voisins(plateau, bille,direction))
+            alliance.extend(coequipier_voisins(plateau, bille,direction,color))
             aligne = bille
             
             if plateau.get_bille(key).get_couleur() == (101, 67, 32) :
@@ -524,14 +524,14 @@ def voisins_jouables(plateau, bille):
                     aligne = aide
                 allie.append(alliance)
             
-            elif plateau.get_bille(key).get_couleur() == (0, 0, 255) and verification_sumito(plateau,[bille] + alliance,direction)[0] :
+            elif plateau.get_bille(key).get_couleur() != color and verification_sumito(plateau,[bille] + alliance,direction)[0] :
                 voisins.append(key)
                 for aide in alliance:
                     if not alignement(aligne,aide):
                         alliance.remove(aide)
                     aligne = aide
                 allie.append(alliance)
-            print(f"fn : voisins de {bille} jouables{voisins} - alliance {allie} POUR direction {direction}")    
+            # print(f"fn : voisins de {bille} jouables{voisins} - alliance {allie} POUR direction {direction}")    
         except:
             continue
     
