@@ -40,24 +40,21 @@ class Node:
     def generate_children(self):
         """ fonction qui genere les enfants d'un noeud"""
 
-        if self.depth %2 == 0:
-            color = self.color
-        else:
-            color = self.enemi
-        mouvement = toolbox.billes_jouables_IA(self.plateau, color)
+        
+        mouvement = toolbox.billes_jouables_IA(self.plateau, self.color)
         if self.depth == 0:
             self.score = eval_score(self.plateau, self.color)
             return 
         
         for bille in mouvement:
-            possibilite, alliance = toolbox.voisins_jouables(self.plateau, bille[0],color)
+            possibilite, alliance = toolbox.voisins_jouables(self.plateau, bille[0],self.color)
 
             for pos, allie in zip(possibilite, alliance):
                 bille = [bille[0]]
                 bille.extend(allie)
                 direction = toolbox.direction_IA(self.plateau, bille[0], pos)
-                score = preview(self.plateau, bille, direction, color)
-                child = Node(score[1], depth = self.depth - 1, move = bille, parent = self, new_pose = pos, color = color)
+                score = preview(self.plateau, bille, direction, self.color)
+                child = Node(score[1], depth = self.depth - 1, move = bille, parent = self, new_pose = pos, color = self.enemi)
                 self.add_child(child)
                 
         
@@ -159,7 +156,7 @@ def eval_score(plateau,color):
     score_ennemi = COEF_CENTRE * center_ennemi + COEF_DENSITE * \
         densite_ennemi + COEF_ELIMINATION * elimination_ennemi
 
-    score =score_ennemi - score_allie
+    score = score_allie - score_ennemi
     return round(score, 2)
 
 
