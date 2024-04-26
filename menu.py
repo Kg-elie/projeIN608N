@@ -188,6 +188,41 @@ def play(SCREEN, BG):
 
         pygame.display.update()
 
+def endgame(SCREEN, winner):
+    pygame.display.set_caption('Endgame')
+
+    while True:
+        ENDGAME_MOUSE_POS = pygame.mouse.get_pos()
+
+        game_over_screen_fade = pygame.Surface((sd.WINDOW_SIZE[0], sd.WINDOW_SIZE[1]))
+        game_over_screen_fade.set_alpha(90)
+        SCREEN.blit(game_over_screen_fade, (0, 0))
+
+        ENDGAME_TEXT = toolbox.get_font(sd.FONT_SIZE).render(
+            f"{winner} won !", True, "White")
+        ENDGAME_RECT = ENDGAME_TEXT.get_rect(    
+            center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
+        SCREEN.blit(ENDGAME_TEXT, ENDGAME_RECT)
+
+        MENU_BACK = toolbox.Button(image=None, pos=(
+            sd.WINDOW_SIZE[0]//1.10, sd.WINDOW_SIZE[1]//1.10), text_input="Menu", font=toolbox.get_font(
+            sd.FONT_SIZE*1.7), base_color="Grey", hovering_color="Grey")
+        
+        MENU_BACK.changeColor(ENDGAME_MOUSE_POS)
+        MENU_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if MENU_BACK.checkForInput(ENDGAME_MOUSE_POS):
+                    main_menu(SCREEN, sd.back_image)
+
+        pygame.display.update()
+        
+
+
 
 if __name__ == "__main__":
     pygame.init()

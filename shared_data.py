@@ -17,3 +17,4 @@ BLACK = (0, 0, 0)
 
 back_image = pygame.image.load("bg.png")
 back_image = pygame.transform.scale(back_image, WINDOW_SIZE)
+clock = pygame.time.Clock()
