@@ -142,9 +142,9 @@ class Plateau:
             elif bille.get_couleur() == (255, 0, 0):
                 red += 1
         if red == 8:
-            return "blue"
+            return "Blue"
         elif blue == 8:
-            return "red"
+            return "Red"
         else:
             return ""
 

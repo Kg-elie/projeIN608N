@@ -32,17 +32,17 @@ def main_menu(SCREEN, BG):
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         MENU_TEXT = toolbox.get_font(
-            sd.FONT_SIZE*2.2).render('Main Menu', 1, (255, 255, 255))
+            sd.FONT_SIZE*2.2).render('Abalone', 1, (255, 255, 255))
         MENU_RECT = MENU_TEXT.get_rect(
             center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//7.2))
 
-        PLAY_Button = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.4), text_input="PLAY", font=toolbox.get_font(
+        PLAY_Button = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.4), text_input="-> PLAY", font=toolbox.get_font(
             sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
         Option_Button = toolbox.Button(image=button_image, pos=(sd.WINDOW_SIZE[0]//1.08, sd.WINDOW_SIZE[1]//1.16), text_input="", font=toolbox.get_font(
             sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
-        QUIT_Button = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.44), text_input="QUIT", font=toolbox.get_font(
+        QUIT_Button = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//1.44), text_input="-> QUIT", font=toolbox.get_font(
             sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
@@ -93,13 +93,13 @@ def option(SCREEN, BG):
             "new resolution", True, "White")
 
         RESTART_RECT1 = RESTART_TEXT1.get_rect(
-            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//3.2))
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//2.5))
         RESTART_RECT2 = RESTART_TEXT2.get_rect(
-            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//2.6))
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//2.05))
         RESTART_RECT3 = RESTART_TEXT3.get_rect(
-            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//2.2))
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//1.75))
         RESTART_RECT4 = RESTART_TEXT4.get_rect(
-            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//1.9))
+            center=(sd.WINDOW_SIZE[0]//7, sd.WINDOW_SIZE[1]//1.53))
 
         SCREEN.blit(RESTART_TEXT1, RESTART_RECT1)
         SCREEN.blit(RESTART_TEXT2, RESTART_RECT2)
@@ -191,12 +191,12 @@ def play(SCREEN, BG):
 def endgame(SCREEN, winner):
     pygame.display.set_caption('Endgame')
 
+    game_over_screen_fade = pygame.Surface((sd.WINDOW_SIZE[0], sd.WINDOW_SIZE[1]), pygame.SRCALPHA)
+    game_over_screen_fade.fill((0, 0, 0, 128))
+    SCREEN.blit(game_over_screen_fade, (0, 0))
+
     while True:
         ENDGAME_MOUSE_POS = pygame.mouse.get_pos()
-
-        game_over_screen_fade = pygame.Surface((sd.WINDOW_SIZE[0], sd.WINDOW_SIZE[1]))
-        game_over_screen_fade.set_alpha(90)
-        SCREEN.blit(game_over_screen_fade, (0, 0))
 
         ENDGAME_TEXT = toolbox.get_font(sd.FONT_SIZE).render(
             f"{winner} won !", True, "White")

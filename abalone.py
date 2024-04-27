@@ -52,31 +52,30 @@ def game(SCREEN):
         bleft, rleft = 0, 0
 
         points_f = toolbox.get_font(sd.FONT_SIZE*2.2).render(
-                f"{pointsBlue} : {pointsRed}", True, "White")
-        pygame.draw.rect(SCREEN, "#171614", (sd.WINDOW_SIZE[0]//1.30, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//5, sd.WINDOW_SIZE[1]//7.2))
-        points_rect = points_f.get_rect(center=(sd.WINDOW_SIZE[0]//1.163, sd.WINDOW_SIZE[1]//7.2))
+                f"{pointsBlue} : {pointsRed}", True, "Grey")
+        text_points = toolbox.get_font(sd.FONT_SIZE*1.3).render(
+                "Blue  Red", True, "Grey")
+        
+        pygame.draw.rect(SCREEN, "#171614", (sd.WINDOW_SIZE[0]//1.30, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//5, sd.WINDOW_SIZE[1]//6))
+        points_rect = points_f.get_rect(center=(sd.WINDOW_SIZE[0]//1.163, sd.WINDOW_SIZE[1]//6))
+        text_rect = text_points.get_rect(center=(sd.WINDOW_SIZE[0]//1.163, sd.WINDOW_SIZE[1]//12))
+
         SCREEN.blit(points_f, points_rect)
+        SCREEN.blit(text_points, text_rect)
 
         if winner := plateau.verif_victoire():
-            game_over_screen_fade = pygame.Surface((sd.WINDOW_SIZE[0], sd.WINDOW_SIZE[1]))
-            game_over_screen_fade.set_alpha(50)
-            SCREEN.blit(game_over_screen_fade, (0, 0))
-            ENDGAME_TEXT = toolbox.get_font(sd.FONT_SIZE).render(
-            f"{winner} won !", True, "White")
-            ENDGAME_RECT = ENDGAME_TEXT.get_rect(    
-                center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
-            SCREEN.blit(ENDGAME_TEXT, ENDGAME_RECT)
+            menu.endgame(SCREEN, winner)
 
         if turn == 0:
             player_turn = toolbox.get_font(sd.FONT_SIZE*1.35).render(
-                "blue's turn", True, "BLACK")
-            pygame.draw.rect(SCREEN, sd.BLUE, (sd.WINDOW_SIZE[0]//25.6, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//4.27, sd.WINDOW_SIZE[1]//7.2))
+                "Blue's turn", True, "Grey")
+            pygame.draw.rect(SCREEN, "#171614", (sd.WINDOW_SIZE[0]//25.6, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//4.27, sd.WINDOW_SIZE[1]//7.2))
             player_rect = player_turn.get_rect(center=(sd.WINDOW_SIZE[0]//6.4, sd.WINDOW_SIZE[1]//7.2))
             SCREEN.blit(player_turn, player_rect)
         else:
             player_turn = toolbox.get_font(sd.FONT_SIZE*1.35).render(
-                "red's turn", True, "BLACK")
-            pygame.draw.rect(SCREEN, sd.RED, (sd.WINDOW_SIZE[0]//25.6, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//4.27, sd.WINDOW_SIZE[1]//7.2))
+                "Red's turn", True, "Grey")
+            pygame.draw.rect(SCREEN, "#171614", (sd.WINDOW_SIZE[0]//25.6, sd.WINDOW_SIZE[1]//14.4, sd.WINDOW_SIZE[0]//4.27, sd.WINDOW_SIZE[1]//7.2))
             player_rect = player_turn.get_rect(center=(sd.WINDOW_SIZE[0]//6.4, sd.WINDOW_SIZE[1]//7.2))
             SCREEN.blit(player_turn, player_rect)
 
