@@ -2,16 +2,17 @@ import pygame
 import sys
 import abalone
 import abalone_IA
+import abalone_iaVSia
 import toolbox
 import shared_data as sd
 
 resolution = [(640, 360), (1280, 720), (1600, 900), (1920, 1080)]
 
-button_image = pygame.image.load("rouecrantee.png")
+button_image = pygame.image.load("assets/rouecrantee.png")
 button_image = pygame.transform.scale(
     button_image, (sd.WINDOW_SIZE[1]//4.8, sd.WINDOW_SIZE[1]//4.8))
 
-arrow_image = pygame.image.load("arrow_back.png")
+arrow_image = pygame.image.load("assets/arrow_back.png")
 arrow_image = pygame.transform.scale(
     arrow_image, (sd.WINDOW_SIZE[1]//7.2, sd.WINDOW_SIZE[1]//7.2))
 
@@ -162,6 +163,9 @@ def play(SCREEN, BG):
 
         GAME_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//3, sd.WINDOW_SIZE[1]//2), text_input="1 vs 1", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
+        
+        AI_AI_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//1.5, sd.WINDOW_SIZE[1]//1.5), text_input="AI vs AI (demo)", font=toolbox.get_font(
+            sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
 
         AI_GAME_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//1.5, sd.WINDOW_SIZE[1]//2), text_input="1 vs AI", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
@@ -170,7 +174,7 @@ def play(SCREEN, BG):
             sd.WINDOW_SIZE[0]//1.08, sd.WINDOW_SIZE[1]//1.16), text_input="", font=toolbox.get_font(
             sd.FONT_SIZE*1.7), base_color="#d7fcd4", hovering_color="Green")
 
-        for Button in [GAME_BUTTON, AI_GAME_BUTTON, PLAY_BACK]:
+        for Button in [GAME_BUTTON, AI_GAME_BUTTON, PLAY_BACK, AI_AI_BUTTON]:
             Button.changeColor(PLAY_MOUSE_POS)
             Button.update(SCREEN)
 
@@ -185,6 +189,8 @@ def play(SCREEN, BG):
                     abalone_IA.game_IA(SCREEN)
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu(SCREEN, BG)
+                if AI_AI_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                    abalone_iaVSia.game_IA(SCREEN, demo=True)
 
         pygame.display.update()
 
@@ -227,7 +233,7 @@ def endgame(SCREEN, winner):
 if __name__ == "__main__":
     pygame.init()
     SCREEN = pygame.display.set_mode(sd.WINDOW_SIZE)
-    BG = pygame.image.load('bg.png')
+    BG = pygame.image.load('assets/bg.png')
     BG = pygame.transform.scale(BG, sd.WINDOW_SIZE)
     pygame.display.set_caption('Game')
     main_menu(SCREEN, BG)
