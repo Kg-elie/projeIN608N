@@ -20,6 +20,7 @@ class Node:
         self.color = color
         self.enemi = sd.RED if self.color == sd.BLUE else sd.BLUE
         self.generate_children()
+        print(f" noeud crée avec un score de {self.score} et une profondeur de {self.depth}")
 
     def add_child(self, child):
         child.parent = self
