@@ -163,7 +163,7 @@ def play(SCREEN, BG):
 
         GAME_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//3, sd.WINDOW_SIZE[1]//2), text_input="1 vs 1", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
-        
+
         AI_AI_BUTTON = toolbox.Button(image=None, pos=(sd.WINDOW_SIZE[0]//1.5, sd.WINDOW_SIZE[1]//1.5), text_input="AI vs AI (demo)", font=toolbox.get_font(
             sd.FONT_SIZE), base_color="WHITE", hovering_color="Green")
 
@@ -190,14 +190,16 @@ def play(SCREEN, BG):
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu(SCREEN, BG)
                 if AI_AI_BUTTON.checkForInput(PLAY_MOUSE_POS):
-                    abalone_iaVSia.game_IA(SCREEN, demo=True)
+                    abalone_iaVSia.game_IA(SCREEN)
 
         pygame.display.update()
+
 
 def endgame(SCREEN, winner):
     pygame.display.set_caption('Endgame')
 
-    game_over_screen_fade = pygame.Surface((sd.WINDOW_SIZE[0], sd.WINDOW_SIZE[1]), pygame.SRCALPHA)
+    game_over_screen_fade = pygame.Surface(
+        (sd.WINDOW_SIZE[0], sd.WINDOW_SIZE[1]), pygame.SRCALPHA)
     game_over_screen_fade.fill((0, 0, 0, 128))
     SCREEN.blit(game_over_screen_fade, (0, 0))
 
@@ -206,14 +208,14 @@ def endgame(SCREEN, winner):
 
         ENDGAME_TEXT = toolbox.get_font(sd.FONT_SIZE).render(
             f"{winner} won !", True, "White")
-        ENDGAME_RECT = ENDGAME_TEXT.get_rect(    
+        ENDGAME_RECT = ENDGAME_TEXT.get_rect(
             center=(sd.WINDOW_SIZE[0]//2, sd.WINDOW_SIZE[1]//2.7))
         SCREEN.blit(ENDGAME_TEXT, ENDGAME_RECT)
 
         MENU_BACK = toolbox.Button(image=None, pos=(
             sd.WINDOW_SIZE[0]//1.10, sd.WINDOW_SIZE[1]//1.10), text_input="Menu", font=toolbox.get_font(
             sd.FONT_SIZE*1.7), base_color="Grey", hovering_color="Grey")
-        
+
         MENU_BACK.changeColor(ENDGAME_MOUSE_POS)
         MENU_BACK.update(SCREEN)
 
@@ -226,8 +228,6 @@ def endgame(SCREEN, winner):
                     main_menu(SCREEN, sd.back_image)
 
         pygame.display.update()
-        
-
 
 
 if __name__ == "__main__":
