@@ -4,9 +4,9 @@ import toolbox
 import minmax
 import shared_data as sd
 import menu
-
+import time
 cercles = []
-turn = 0
+turn = 1
 player = [sd.BLUE, sd.RED]
 
 
@@ -68,7 +68,7 @@ def game_IA(SCREEN):
         if winner := plateau.verif_victoire():
             menu.endgame(SCREEN, winner)
 
-        if turn == 0:
+        if turn == 1:
             player_turn = toolbox.get_font(sd.FONT_SIZE*1.35).render(
                 "Blue's turn", True, "BLACK")
             pygame.draw.rect(
@@ -84,7 +84,7 @@ def game_IA(SCREEN):
             player_rect = player_turn.get_rect(
                 center=(sd.WINDOW_SIZE[0]//6.4, sd.WINDOW_SIZE[1]//7.2))
             SCREEN.blit(player_turn, player_rect)
-
+        time.sleep(1)
         if len(billes_select) == 0:
             print(f"tour de l'IA pour le joueur {player[turn]}")
             noeud = minmax.Node(plateau, depth=2, color=player[turn])
